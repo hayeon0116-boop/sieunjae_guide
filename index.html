@@ -3,6 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="referrer" content="no-referrer-when-downgrade">
 <title>경주 시은재 가이드</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+KR:wght@300;400;600&family=Noto+Sans+KR:wght@300;400;500&display=swap" rel="stylesheet">
@@ -746,12 +747,27 @@ async function translateAll(items, fieldsList, targetLang) {
         }
       );
       const data = await res.json();
-      console.log('[번역] 응답:', JSON.stringify(data).substring(0, 100));
-      (data.data && data.data.translations || []).forEach(function(t, i) {
+      if (!res.ok) {
+        console.error('[번역] HTTP 에러:', res.status, res.statusText);
+        console.error('[번역] 응답 본문:', JSON.stringify(data));
+        return items.map(item => ({...item}));
+      }
+      if (data.error) {
+        console.error('[번역] API 에러:', data.error.code, data.error.message);
+        console.error('[번역] 상세:', JSON.stringify(data.error));
+        return items.map(item => ({...item}));
+      }
+      const translations = (data.data && data.data.translations) || [];
+      if (translations.length === 0) {
+        console.warn('[번역] 응답에 번역 결과가 없음:', JSON.stringify(data).substring(0, 200));
+      } else {
+        console.log('[번역] 성공:', translations.length, '개');
+      }
+      translations.forEach(function(t, i) {
         translateCache[targetLang + '::' + toTranslate[i]] = t.translatedText || toTranslate[i];
       });
     } catch(e) {
-      console.log('[번역] 오류:', e.message);
+      console.error('[번역] 네트워크 오류:', e.message);
       return items.map(item => ({...item}));
     }
   }
