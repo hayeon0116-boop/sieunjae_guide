@@ -1065,7 +1065,7 @@ async function renderCourses() {
     // 경로 표시 (→ 로 구분)
     const routeHtml = translatedRoute ? `
       <div class="course-route">
-        ${(currentLang !== 'ko' ? translatedRoute.split(' → ') : translatedRoute.split(/[,，]/)).map((s, i, arr) => {
+        ${translatedRoute.split(/[,，、]/).map((s, i, arr) => {
           const name = s.trim();
           const isEnd = i === 0 || i === arr.length - 1;
           const cls = isEnd ? 'route-stop-name first' : 'route-stop-name';
