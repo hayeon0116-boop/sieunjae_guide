@@ -862,7 +862,7 @@ async function renderRestaurants() {
           <span class="card-chevron">▼</span>
         </div>
         ${t['추천메뉴'] ? `<div class="card-menu">${t['추천메뉴']}</div>` : ''}
-        ${t['설명'] ? `<div class="card-desc">${t['설명']}</div>` : ''}
+        ${t['설명'] ? `<div class="card-desc">${t['설명'].replace(/\n/g, '<br>')}</div>` : ''}
         <div class="card-links" onclick="event.stopPropagation()">
           ${r['네이버맵_URL'] ? `<a class="map-btn naver" href="${r['네이버맵_URL']}" target="_blank">${{'ko':'네이버지도','en':'Naver Maps','ja':'ナバーマップ','zh':'Naver地图','es':'Naver Maps'}[currentLang]||'네이버지도'}</a>` : ''}
           ${r['구글맵_URL']   ? `<a class="map-btn google" href="${r['구글맵_URL']}"   target="_blank">Google Maps</a>` : ''}
@@ -969,7 +969,7 @@ function renderReviewItems(reviews) {
         <span class="expand-review-nick">${r['닉네임'] || '익명'}</span>
         <span class="expand-review-stars">${'★'.repeat(parseInt(r['별점']) || 0)}</span>
       </div>
-      <div class="expand-review-text">${r['내용'] || ''}</div>
+      <div class="expand-review-text">${(r['내용'] || '').replace(/\n/g, '<br>')}</div>
       <div class="expand-review-date">${r['작성일시'] || ''}</div>
     </div>`).join('');
 }
@@ -1085,7 +1085,7 @@ async function renderCourses() {
         </div>
         ${routeHtml}
         ${c['네이버맵_URL'] ? `<a class="map-btn naver" href="${c['네이버맵_URL']}" target="_blank" style="display:block; margin-top:12px; text-align:center;">${{'ko':'네이버지도에서 보기','en':'View on Naver Maps','ja':'ナバーマップで見る','zh':'在Naver地图查看','es':'Ver en Naver Maps'}[currentLang] || '네이버지도에서 보기'}</a>` : ''}
-        ${t['설명'] ? `<div class="course-desc" style="margin-top:12px;">${t['설명']}</div>` : ''}
+        ${t['설명'] ? `<div class="course-desc" style="margin-top:12px;">${t['설명'].replace(/\n/g, '<br>')}</div>` : ''}
       </div>`;
     list.appendChild(card);
   }
