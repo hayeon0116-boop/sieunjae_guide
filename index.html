@@ -1,0 +1,1206 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>경주 시은재 가이드</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+KR:wght@300;400;600&family=Noto+Sans+KR:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --ink: #1a1208;
+    --paper: #f7f2e8;
+    --paper2: #efe9d8;
+    --accent: #8b4513;
+    --accent2: #c8860a;
+    --muted: #7a6a55;
+    --border: #d4c4a8;
+    --white: #fdfaf4;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    background: var(--paper);
+    color: var(--ink);
+    font-family: 'Noto Sans KR', sans-serif;
+    font-weight: 300;
+    min-height: 100vh;
+  }
+
+  /* HEADER */
+  header {
+    background: var(--ink);
+    color: var(--paper);
+    padding: 28px 24px 20px;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    border-bottom: 2px solid var(--accent2);
+  }
+
+  .header-title {
+    font-family: 'Noto Serif KR', serif;
+    font-size: 18px;
+    font-weight: 600;
+    letter-spacing: 0.05em;
+    line-height: 1.3;
+  }
+  .lang-select {
+    appearance: none;
+    background: transparent;
+    border: 1px solid var(--border);
+    color: var(--paper);
+    font-family: 'Noto Sans KR', sans-serif;
+    font-size: 12px;
+    padding: 6px 28px 6px 10px;
+    border-radius: 4px;
+    cursor: pointer;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6'%3E%3Cpath d='M0 0l5 6 5-6z' fill='%23c8860a'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 10px center;
+    flex-shrink: 0;
+  }
+  .lang-select option { background: #1a1208; color: #f7f2e8; }
+
+  .header-title span {
+    display: block;
+    font-size: 11px;
+    font-weight: 300;
+    letter-spacing: 0.15em;
+    color: var(--accent2);
+    margin-top: 2px;
+  }
+
+  /* LANGUAGE SELECTOR */
+
+  /* TABS */
+  .tabs {
+    display: flex;
+    background: var(--paper2);
+    border-bottom: 1px solid var(--border);
+    overflow-x: auto;
+  }
+  .tab-btn {
+    flex: 1;
+    min-width: 80px;
+    padding: 14px 8px;
+    border: none;
+    background: transparent;
+    font-family: 'Noto Sans KR', sans-serif;
+    font-size: 13px;
+    font-weight: 300;
+    color: var(--muted);
+    cursor: pointer;
+    border-bottom: 2px solid transparent;
+    transition: all 0.2s;
+    white-space: nowrap;
+  }
+  .tab-btn.active {
+    color: var(--accent);
+    border-bottom-color: var(--accent);
+    font-weight: 500;
+  }
+
+  /* SECTIONS */
+  .section { display: none; padding: 20px 16px; }
+  .section.active { display: block; }
+
+  /* 아코디언 */
+  .restaurant-card { cursor: pointer; }
+
+  .card-expand {
+    display: none;
+    border-top: 1px solid var(--border);
+    padding: 16px;
+    background: var(--paper);
+  }
+  .card-expand.open { display: block; }
+
+  .expand-review-title {
+    font-family: 'Noto Serif KR', serif;
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--ink);
+    margin-bottom: 12px;
+    padding-bottom: 8px;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .expand-no-review {
+    font-size: 12px;
+    color: var(--muted);
+    text-align: center;
+    padding: 12px 0;
+  }
+
+  .expand-review-item {
+    padding: 10px 0;
+    border-bottom: 1px solid var(--border);
+  }
+  .expand-review-item:last-child { border-bottom: none; }
+
+  .expand-review-top {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 4px;
+  }
+  .expand-review-nick { font-size: 12px; font-weight: 500; }
+  .expand-review-stars { font-size: 11px; color: var(--accent2); }
+  .expand-review-text { font-size: 12px; color: var(--muted); line-height: 1.6; }
+  .expand-review-date { font-size: 10px; color: #bbb; margin-top: 4px; text-align: right; }
+
+  .expand-more-btn {
+    width: 100%;
+    padding: 8px;
+    margin: 4px 0 8px;
+    background: transparent;
+    border: 1px solid var(--border);
+    border-radius: 5px;
+    color: var(--muted);
+    font-size: 12px;
+    font-family: 'Noto Sans KR', sans-serif;
+    cursor: pointer;
+    transition: background 0.15s;
+  }
+  .expand-more-btn:hover { background: var(--paper2); }
+
+  .expand-write-btn {
+    width: 100%;
+    padding: 10px;
+    margin-top: 12px;
+    background: transparent;
+    border: 1px dashed var(--accent);
+    border-radius: 5px;
+    color: var(--accent);
+    font-size: 13px;
+    font-family: 'Noto Sans KR', sans-serif;
+    cursor: pointer;
+    transition: background 0.15s;
+  }
+  .expand-write-btn:hover { background: var(--paper2); }
+
+  /* 후기 작성 인라인 폼 */
+  .inline-review-form {
+    display: none;
+    margin-top: 12px;
+    padding: 14px;
+    background: var(--white);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+  }
+  .inline-review-form.open { display: block; }
+
+  .card-chevron {
+    font-size: 12px;
+    color: var(--muted);
+    transition: transform 0.2s;
+    margin-left: auto;
+    padding-left: 8px;
+    flex-shrink: 0;
+  }
+  .card-chevron.open { transform: rotate(180deg); }
+
+  /* 이용안내 */
+  .guide-item {
+    background: var(--white);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 16px;
+    margin-bottom: 12px;
+  }
+  .guide-item-title {
+    font-family: 'Noto Serif KR', serif;
+    font-size: 15px;
+    font-weight: 600;
+    color: var(--ink);
+    margin-bottom: 8px;
+  }
+  .guide-item-content {
+    font-size: 13px;
+    color: var(--muted);
+    line-height: 1.8;
+  }
+
+  /* LOADING / ERROR */
+  .loading {
+    text-align: center;
+    padding: 60px 20px;
+    color: var(--muted);
+    font-size: 13px;
+    letter-spacing: 0.1em;
+  }
+  .loading::before {
+    content: '⏳';
+    display: block;
+    font-size: 28px;
+    margin-bottom: 12px;
+  }
+
+  /* RESTAURANT CARDS */
+  .restaurant-grid {
+    display: grid;
+    gap: 14px;
+  }
+
+  .restaurant-card {
+    background: var(--white);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    overflow: hidden;
+    transition: transform 0.15s, box-shadow 0.15s;
+  }
+  .restaurant-card:active { transform: scale(0.99); }
+
+  .card-img {
+    width: 100%;
+    height: 180px;
+    object-fit: cover;
+    display: block;
+    background: var(--paper2);
+  }
+  .card-img-placeholder {
+    width: 100%;
+    height: 180px;
+    background: var(--paper2);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--border);
+    font-size: 32px;
+  }
+  .card-body { padding: 16px; }
+
+  .card-top {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 8px;
+    margin-bottom: 8px;
+  }
+
+  .card-name {
+    font-family: 'Noto Serif KR', serif;
+    font-size: 16px;
+    font-weight: 600;
+    color: var(--ink);
+    line-height: 1.3;
+  }
+
+  .card-category {
+    background: var(--paper2);
+    border: 1px solid var(--border);
+    color: var(--muted);
+    font-size: 10px;
+    padding: 3px 8px;
+    border-radius: 20px;
+    white-space: nowrap;
+    flex-shrink: 0;
+  }
+
+  .card-menu {
+    font-size: 12px;
+    color: var(--accent2);
+    margin-bottom: 8px;
+    font-weight: 400;
+  }
+  .card-menu::before { content: '✦ '; }
+
+  .card-desc {
+    font-size: 13px;
+    color: var(--muted);
+    line-height: 1.7;
+    margin-bottom: 14px;
+  }
+
+  .card-links {
+    display: flex;
+    gap: 8px;
+  }
+
+  .map-btn {
+    flex: 1;
+    padding: 9px 0;
+    border-radius: 5px;
+    font-size: 12px;
+    font-weight: 500;
+    text-align: center;
+    text-decoration: none;
+    transition: opacity 0.15s;
+    cursor: pointer;
+    border: none;
+  }
+  .map-btn:active { opacity: 0.75; }
+  .map-btn.naver {
+    background: #03c75a;
+    color: #fff;
+  }
+  .map-btn.google {
+    background: #4285f4;
+    color: #fff;
+  }
+
+  /* COURSE CARDS */
+  .course-card {
+    background: var(--white);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    overflow: hidden;
+    margin-bottom: 14px;
+  }
+
+  .course-map-placeholder {
+    width: 100%;
+    height: 200px;
+    background: var(--paper2);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--muted);
+    font-size: 12px;
+    letter-spacing: 0.05em;
+    border-bottom: 1px solid var(--border);
+    position: relative;
+    overflow: hidden;
+  }
+
+  .course-map-img {
+    width: 100%;
+    aspect-ratio: 1 / 1;
+    object-fit: cover;
+    border-bottom: 1px solid var(--border);
+    display: block;
+  }
+
+  .course-body { padding: 16px; }
+
+  .course-name {
+    font-family: 'Noto Serif KR', serif;
+    font-size: 17px;
+    font-weight: 600;
+    margin-bottom: 10px;
+  }
+
+  .course-meta {
+    display: flex;
+    gap: 12px;
+    margin-bottom: 12px;
+    flex-wrap: wrap;
+  }
+
+  .meta-chip {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    font-size: 12px;
+    color: var(--muted);
+  }
+  .meta-chip strong {
+    color: var(--ink);
+    font-weight: 500;
+  }
+
+  .difficulty {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    font-size: 12px;
+    padding: 3px 10px;
+    border-radius: 20px;
+    font-weight: 500;
+  }
+  .diff-하 { background: #e8f5e9; color: #2e7d32; }
+  .diff-중 { background: #fff8e1; color: #f57f17; }
+  .diff-상 { background: #fce4ec; color: #c62828; }
+
+  .course-desc {
+    font-size: 13px;
+    color: var(--muted);
+    line-height: 1.8;
+  }
+
+  /* 경로 스탬프 */
+  .course-route {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 4px;
+    margin: 12px 0;
+    padding: 12px;
+    background: var(--paper2);
+    border-radius: 8px;
+    border: 1px solid var(--border);
+  }
+  .route-stop { display: flex; align-items: center; gap: 4px; }
+  .route-stop-name {
+    font-size: 12px;
+    font-weight: 500;
+    color: var(--ink);
+    background: var(--white);
+    border: 1px solid var(--border);
+    border-radius: 20px;
+    padding: 3px 10px;
+    white-space: nowrap;
+  }
+  .route-stop-name.first, .route-stop-name.last {
+    background: var(--accent);
+    color: var(--white);
+    border-color: var(--accent);
+  }
+  .route-arrow { color: var(--accent2); font-size: 12px; flex-shrink: 0; }
+
+  /* REVIEWS */
+  .review-form {
+    background: var(--white);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 18px;
+    margin-bottom: 20px;
+  }
+
+  .form-title {
+    font-family: 'Noto Serif KR', serif;
+    font-size: 15px;
+    font-weight: 600;
+    margin-bottom: 14px;
+    color: var(--ink);
+  }
+
+  .form-group { margin-bottom: 12px; }
+
+  .form-label {
+    display: block;
+    font-size: 11px;
+    color: var(--muted);
+    letter-spacing: 0.08em;
+    margin-bottom: 5px;
+    text-transform: uppercase;
+  }
+
+  .form-input, .form-select, .form-textarea {
+    width: 100%;
+    padding: 10px 12px;
+    border: 1px solid var(--border);
+    border-radius: 5px;
+    font-family: 'Noto Sans KR', sans-serif;
+    font-size: 13px;
+    background: var(--paper);
+    color: var(--ink);
+    outline: none;
+    transition: border-color 0.2s;
+  }
+  .form-input:focus, .form-select:focus, .form-textarea:focus {
+    border-color: var(--accent);
+  }
+  .form-textarea {
+    resize: vertical;
+    min-height: 80px;
+  }
+
+  .star-row {
+    display: flex;
+    gap: 6px;
+    margin-top: 4px;
+  }
+  .star-btn {
+    font-size: 24px;
+    background: none;
+    border: none;
+    cursor: pointer;
+    color: #ddd;
+    transition: color 0.1s, transform 0.1s;
+    padding: 0;
+    line-height: 1;
+  }
+  .star-btn.active { color: var(--accent2); }
+  .star-btn:active { transform: scale(1.2); }
+
+  .submit-btn {
+    width: 100%;
+    padding: 12px;
+    background: var(--accent);
+    color: var(--white);
+    border: none;
+    border-radius: 5px;
+    font-family: 'Noto Sans KR', sans-serif;
+    font-size: 14px;
+    font-weight: 500;
+    cursor: pointer;
+    margin-top: 4px;
+    transition: opacity 0.15s;
+    letter-spacing: 0.05em;
+  }
+  .submit-btn:active { opacity: 0.8; }
+  .submit-btn:disabled { opacity: 0.5; cursor: not-allowed; }
+
+  .review-list { margin-top: 4px; }
+
+  .review-item {
+    background: var(--white);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 14px 16px;
+    margin-bottom: 10px;
+  }
+
+  .review-top {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 6px;
+  }
+
+  .review-nick {
+    font-weight: 500;
+    font-size: 13px;
+  }
+
+  .review-stars { color: var(--accent2); font-size: 13px; letter-spacing: 2px; }
+
+  .review-restaurant {
+    font-size: 11px;
+    color: var(--accent);
+    margin-bottom: 6px;
+    font-weight: 400;
+  }
+
+  .review-text {
+    font-size: 13px;
+    color: var(--muted);
+    line-height: 1.7;
+  }
+
+  .review-date {
+    font-size: 10px;
+    color: #bbb;
+    margin-top: 6px;
+    text-align: right;
+  }
+
+  /* TOAST */
+  .toast {
+    position: fixed;
+    bottom: 24px;
+    left: 50%;
+    transform: translateX(-50%) translateY(80px);
+    background: var(--ink);
+    color: var(--paper);
+    padding: 12px 24px;
+    border-radius: 24px;
+    font-size: 13px;
+    z-index: 999;
+    transition: transform 0.3s ease;
+    pointer-events: none;
+    white-space: nowrap;
+  }
+  .toast.show { transform: translateX(-50%) translateY(0); }
+
+  /* SECTION HEADER */
+  .section-header {
+    margin-bottom: 16px;
+    padding-bottom: 12px;
+    border-bottom: 1px solid var(--border);
+  }
+  .section-header h2 {
+    font-family: 'Noto Serif KR', serif;
+    font-size: 20px;
+    font-weight: 600;
+    color: var(--ink);
+  }
+  .section-header p {
+    font-size: 12px;
+    color: var(--muted);
+    margin-top: 4px;
+    line-height: 1.6;
+  }
+
+  .empty-state {
+    text-align: center;
+    padding: 40px 20px;
+    color: var(--muted);
+    font-size: 13px;
+  }
+  .empty-state::before {
+    content: '🍽️';
+    display: block;
+    font-size: 32px;
+    margin-bottom: 12px;
+  }
+
+  /* 번역 중 표시 */
+  .translating {
+    opacity: 0.5;
+    transition: opacity 0.3s;
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="header-title">
+    경주 시은재
+    <span>GYEONGJU SIEUNJAE</span>
+  </div>
+  <select class="lang-select" id="langSelect" onchange="changeLanguage(this.value)">
+    <option value="ko">한국어</option>
+    <option value="en">English</option>
+    <option value="ja">日本語</option>
+    <option value="zh">中文</option>
+    <option value="es">Español</option>
+  </select>
+
+</header>
+
+<div class="tabs">
+  <button class="tab-btn active" onclick="switchTab('guide', this)" id="tab-guide">📋 이용안내</button>
+  <button class="tab-btn" onclick="switchTab('restaurants', this)" id="tab-restaurants">🍜 맛집</button>
+  <button class="tab-btn" onclick="switchTab('courses', this)" id="tab-courses">🚶 산책코스</button>
+</div>
+
+<!-- 맛집 섹션 -->
+<div class="section" id="section-restaurants">
+  <div class="section-header">
+    <h2 id="txt-restaurant-title">추천 맛집</h2>
+    <p id="txt-restaurant-sub">게스트하우스 근처 엄선한 맛집들이에요</p>
+  </div>
+  <div class="restaurant-grid" id="restaurantGrid">
+    <div class="loading" id="txt-loading-r">맛집 불러오는 중...</div>
+  </div>
+</div>
+
+<!-- 산책코스 섹션 -->
+<div class="section" id="section-courses">
+  <div class="section-header">
+    <h2 id="txt-course-title">산책코스</h2>
+    <p id="txt-course-sub">경주의 아름다운 길을 걸어보세요</p>
+  </div>
+  <div id="courseList">
+    <div class="loading" id="txt-loading-c">코스 불러오는 중...</div>
+  </div>
+</div>
+
+
+
+<!-- 이용안내 섹션 -->
+<div class="section active" id="section-guide">
+  <div class="section-header">
+    <h2 id="txt-guide-title">이용안내</h2>
+    <p id="txt-guide-sub">시은재 이용에 관한 안내입니다</p>
+  </div>
+  <div id="guideList">
+    <div class="loading">안내 불러오는 중...</div>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+// =============================================
+// 설정
+// =============================================
+const GOOGLE_TRANSLATE_API_KEY = 'AIzaSyBFIt7In7I2RNLQz_p4igSzVeZb4Lk8siA';
+const APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbxvfpOumplD1E4a-DkQ5tYSVtqwqKr1fN9Un_oyVOHis2U7cLuBsXLwYBi9JqgC7Gte/exec';
+
+// =============================================
+// 상태
+// =============================================
+let selectedStar = 0;
+let currentLang = 'ko';
+let translateCache = {};
+let restaurantData = [];
+let courseData = [];
+let reviewData = [];
+let guideData = [];
+
+// =============================================
+// 번역 (Google Translate API - 배치)
+// =============================================
+async function translateAll(items, fieldsList, targetLang) {
+  if (targetLang === 'ko') return items.map(item => ({...item}));
+
+  // 번역할 텍스트 수집
+  const toTranslate = [];
+  items.forEach(item => {
+    fieldsList.forEach(f => {
+      const text = item[f] ? String(item[f]) : '';
+      if (text && /[가-힣]/.test(text) && !translateCache[targetLang + '::' + text]) {
+        if (!toTranslate.includes(text)) toTranslate.push(text);
+      }
+    });
+  });
+
+  console.log('[번역] 번역할 텍스트:', toTranslate.length, '개');
+
+  if (toTranslate.length > 0) {
+    try {
+      const res = await fetch(
+        'https://translation.googleapis.com/language/translate/v2?key=' + GOOGLE_TRANSLATE_API_KEY,
+        {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ q: toTranslate, source: 'ko', target: targetLang, format: 'text' })
+        }
+      );
+      const data = await res.json();
+      console.log('[번역] 응답:', JSON.stringify(data).substring(0, 100));
+      (data.data && data.data.translations || []).forEach(function(t, i) {
+        translateCache[targetLang + '::' + toTranslate[i]] = t.translatedText || toTranslate[i];
+      });
+    } catch(e) {
+      console.log('[번역] 오류:', e.message);
+      return items.map(item => ({...item}));
+    }
+  }
+
+  return items.map(function(item) {
+    const result = Object.assign({}, item);
+    fieldsList.forEach(function(f) {
+      if (!item[f]) return;
+      const text = String(item[f]);
+      const cached = translateCache[targetLang + '::' + text];
+      if (cached) result[f] = cached;
+    });
+    return result;
+  });
+}
+
+async function translateText(text, targetLang) {
+  if (!text || targetLang === 'ko') return text;
+  if (!/[\uAC00-\uD7A3]/.test(text)) return text;
+  const cacheKey = `${targetLang}::${text}`;
+  if (translateCache[cacheKey]) return translateCache[cacheKey];
+  try {
+    const res = await fetch(
+      `https://translation.googleapis.com/language/translate/v2?key=${GOOGLE_TRANSLATE_API_KEY}`,
+      {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ q: [text], source: 'ko', target: targetLang, format: 'text' })
+      }
+    );
+    const data = await res.json();
+    const translated = data.data?.translations?.[0]?.translatedText || text;
+    translateCache[cacheKey] = translated;
+    return translated;
+  } catch(e) { return text; }
+}
+
+// =============================================
+// Apps Script에서 데이터 로드 (JSON, 인코딩 문제 없음)
+// =============================================
+async function loadSheet(sheetName) {
+  const url = `${APPS_SCRIPT_URL}?sheet=${encodeURIComponent(sheetName)}`;
+  const res = await fetch(url);
+  if (!res.ok) throw new Error('데이터 로드 실패');
+  const data = await res.json();
+  return Array.isArray(data) ? data : [];
+}
+
+
+
+
+
+// =============================================
+// 맛집 렌더링
+// =============================================
+async function loadRestaurants() {
+  const grid = document.getElementById('restaurantGrid');
+  grid.innerHTML = '<div class="loading">맛집 불러오는 중...</div>';
+  try {
+    restaurantData = await loadSheet('맛집');
+    await renderRestaurants();
+  } catch (e) {
+    grid.innerHTML = '<div class="loading">데이터를 불러올 수 없어요.<br>잠시 후 다시 시도해주세요.</div>';
+    console.error(e);
+  }
+}
+
+async function renderRestaurants() {
+  const grid = document.getElementById('restaurantGrid');
+  const filtered = restaurantData.filter(r => String(r['표시여부']).toUpperCase() !== 'N');
+  if (!filtered.length) {
+    grid.innerHTML = '<div class="empty-state">등록된 맛집이 없습니다</div>';
+    return;
+  }
+  grid.innerHTML = '';
+  const translatedRestaurants = await translateAll(filtered, ['이름','카테고리','추천메뉴','설명'], currentLang);
+  for (let i = 0; i < filtered.length; i++) {
+    const r = filtered[i];
+    const t = translatedRestaurants[i];
+    const restaurantName = r['이름'] || '';
+    const card = document.createElement('div');
+    card.className = 'restaurant-card';
+    const imgHtml = r['사진_URL']
+      ? `<img class="card-img" src="${r['사진_URL']}" alt="${t['이름'] || ''}" onerror="this.remove()">`
+      : '';
+    card.innerHTML = `
+      ${imgHtml}
+      <div class="card-body" onclick="toggleCard(this)">
+        <div class="card-top">
+          <div class="card-name">${t['이름'] || ''}</div>
+          <div class="card-category">${t['카테고리'] || ''}</div>
+          <span class="card-chevron">▼</span>
+        </div>
+        ${t['추천메뉴'] ? `<div class="card-menu">${t['추천메뉴']}</div>` : ''}
+        ${t['설명'] ? `<div class="card-desc">${t['설명']}</div>` : ''}
+        <div class="card-links" onclick="event.stopPropagation()">
+          ${r['네이버맵_URL'] ? `<a class="map-btn naver" href="${r['네이버맵_URL']}" target="_blank">${{'ko':'네이버지도','en':'Naver Maps','ja':'ナバーマップ','zh':'Naver地图','es':'Naver Maps'}[currentLang]||'네이버지도'}</a>` : ''}
+          ${r['구글맵_URL']   ? `<a class="map-btn google" href="${r['구글맵_URL']}"   target="_blank">Google Maps</a>` : ''}
+        </div>
+      </div>
+      <div class="card-expand" data-restaurant="${restaurantName}">
+        <div class="expand-review-title">✍️ 후기</div>
+        <div class="expand-review-list"><div class="expand-no-review">후기를 불러오는 중...</div></div>
+        <button class="expand-more-btn" onclick="toggleMoreReviews(this)" style="display:none;">▼ 후기 더보기</button>
+        <button class="expand-write-btn" onclick="toggleWriteForm(this)">✍️ 후기 작성하기</button>
+        <div class="inline-review-form">
+          <div class="form-group">
+            <label class="form-label">닉네임</label>
+            <input class="form-input review-nick" type="text" maxlength="20">
+          </div>
+          <div class="form-group">
+            <label class="form-label">별점</label>
+            <div class="star-row">
+              <button class="star-btn" onclick="setStarInline(this,1)">★</button>
+              <button class="star-btn" onclick="setStarInline(this,2)">★</button>
+              <button class="star-btn" onclick="setStarInline(this,3)">★</button>
+              <button class="star-btn" onclick="setStarInline(this,4)">★</button>
+              <button class="star-btn" onclick="setStarInline(this,5)">★</button>
+            </div>
+          </div>
+          <div class="form-group">
+            <label class="form-label">내용</label>
+            <textarea class="form-textarea review-content" rows="3" maxlength="300"></textarea>
+          </div>
+          <button class="submit-btn" onclick="submitInlineReview(this, '${restaurantName}')">후기 남기기</button>
+        </div>
+      </div>`;
+    grid.appendChild(card);
+  }
+  // 후기 데이터 로드 후 각 카드에 반영
+  await loadReviews();
+  updateAllReviewLists();
+}
+
+function toggleCard(cardBody) {
+  const expand = cardBody.nextElementSibling;
+  const chevron = cardBody.querySelector('.card-chevron');
+  const isOpen = expand.classList.contains('open');
+  // 다른 카드 닫기
+  document.querySelectorAll('.card-expand.open').forEach(e => {
+    e.classList.remove('open');
+    e.previousElementSibling.querySelector('.card-chevron')?.classList.remove('open');
+  });
+  if (!isOpen) {
+    expand.classList.add('open');
+    chevron?.classList.add('open');
+  }
+}
+
+function toggleWriteForm(btn) {
+  const form = btn.nextElementSibling;
+  form.classList.toggle('open');
+  btn.textContent = form.classList.contains('open') ? '✕ 취소' : '+ 후기 남기기';
+}
+
+function setStarInline(btn, n) {
+  const row = btn.closest('.star-row');
+  row.querySelectorAll('.star-btn').forEach((b, i) => b.classList.toggle('active', i < n));
+  row.dataset.star = n;
+}
+
+async function submitInlineReview(btn, restaurantName) {
+  const form = btn.closest('.inline-review-form');
+  const nick = form.querySelector('.review-nick').value.trim();
+  const content = form.querySelector('.review-content').value.trim();
+  const star = parseInt(form.querySelector('.star-row').dataset.star || '0');
+  if (!nick || !content || !star) { showToast('모든 항목을 입력해주세요'); return; }
+
+  btn.disabled = true; btn.textContent = '저장 중...';
+  try {
+    const now = new Date().toLocaleString('ko-KR');
+    const params = new URLSearchParams({
+      action: 'addReview',
+      작성일시: now,
+      닉네임: nick,
+      식당이름: restaurantName,
+      별점: star,
+      내용: content,
+      언어: 'ko'
+    });
+    await fetch(`${APPS_SCRIPT_URL}?${params}`);
+    reviewData.push({ 작성일시: now, 닉네임: nick, 식당이름: restaurantName, 별점: star, 내용: content });
+    updateAllReviewLists();
+    form.querySelector('.review-nick').value = '';
+    form.querySelector('.review-content').value = '';
+    form.querySelector('.star-row').querySelectorAll('.star-btn').forEach(b => b.classList.remove('active'));
+    form.querySelector('.star-row').dataset.star = '0';
+    form.classList.remove('open');
+    form.previousElementSibling.textContent = '+ 후기 남기기';
+    showToast('후기가 등록됐어요 🙏');
+  } catch(e) { showToast('저장에 실패했어요'); }
+  btn.disabled = false; btn.textContent = '후기 남기기';
+}
+
+function renderReviewItems(reviews) {
+  return reviews.map(r => `
+    <div class="expand-review-item">
+      <div class="expand-review-top">
+        <span class="expand-review-nick">${r['닉네임'] || '익명'}</span>
+        <span class="expand-review-stars">${'★'.repeat(parseInt(r['별점']) || 0)}</span>
+      </div>
+      <div class="expand-review-text">${r['내용'] || ''}</div>
+      <div class="expand-review-date">${r['작성일시'] || ''}</div>
+    </div>`).join('');
+}
+
+function updateAllReviewLists() {
+  document.querySelectorAll('.card-expand').forEach(expand => {
+    const name = expand.dataset.restaurant;
+    const list = expand.querySelector('.expand-review-list');
+    const moreBtn = expand.querySelector('.expand-more-btn');
+    const matched = [...reviewData.filter(r => r['식당이름'] === name)].reverse();
+
+    if (!matched.length) {
+      list.innerHTML = '<div class="expand-no-review">아직 후기가 없어요</div>';
+      moreBtn.style.display = 'none';
+      return;
+    }
+
+    const MAX = 3;
+    list.innerHTML = renderReviewItems(matched.slice(0, MAX));
+    list.dataset.all = JSON.stringify(matched);
+
+    if (matched.length > MAX) {
+      moreBtn.style.display = 'block';
+      moreBtn.textContent = `▼ 후기 더보기 (${matched.length - MAX}개)`;
+      moreBtn.dataset.expanded = 'false';
+    } else {
+      moreBtn.style.display = 'none';
+    }
+  });
+}
+
+function toggleMoreReviews(btn) {
+  const expand = btn.closest('.card-expand');
+  const list = expand.querySelector('.expand-review-list');
+  const all = JSON.parse(list.dataset.all || '[]');
+  const isExpanded = btn.dataset.expanded === 'true';
+  const MAX = 3;
+
+  if (isExpanded) {
+    list.innerHTML = renderReviewItems(all.slice(0, MAX));
+    btn.textContent = `▼ 후기 더보기 (${all.length - MAX}개)`;
+    btn.dataset.expanded = 'false';
+  } else {
+    list.innerHTML = renderReviewItems(all);
+    btn.textContent = '▲ 접기';
+    btn.dataset.expanded = 'true';
+  }
+}
+
+// =============================================
+// 산책코스 렌더링
+// =============================================
+async function loadCourses() {
+  const list = document.getElementById('courseList');
+  list.innerHTML = '<div class="loading">코스 불러오는 중...</div>';
+  try {
+    courseData = await loadSheet('산책');
+    await renderCourses();
+  } catch (e) {
+    list.innerHTML = '<div class="loading">데이터를 불러올 수 없어요.</div>';
+    console.error(e);
+  }
+}
+
+
+
+async function renderCourses() {
+  const list = document.getElementById('courseList');
+  const filtered = courseData.filter(c => String(c['표시여부']).toUpperCase() !== 'N');
+  if (!filtered.length) {
+    list.innerHTML = '<div class="empty-state">등록된 코스가 없습니다</div>';
+    return;
+  }
+  list.innerHTML = '';
+  const translatedCourses = await translateAll(filtered, ['코스명','설명','난이도','소요시간','경로'], currentLang);
+  for (let i = 0; i < filtered.length; i++) {
+    const c = filtered[i];
+    const t = translatedCourses[i];
+    // 경로 표시용 변환
+    let translatedRoute = c['경로'] || '';
+    if (c['경로'] && currentLang !== 'ko' && t['경로']) {
+      translatedRoute = t['경로'];
+    }
+    const diffClass = `diff-${c['난이도'] || '하'}`;
+    const card = document.createElement('div');
+    card.className = 'course-card';
+
+    // 이미지
+    const imgHtml = c['코스이미지_URL']
+      ? `<img class="course-map-img" src="${c['코스이미지_URL']}" alt="코스 지도" onerror="this.remove()">`
+      : `<div class="course-map-placeholder">🗺️ 이미지 준비 중</div>`;
+
+    // 경로 표시 (→ 로 구분)
+    const routeHtml = translatedRoute ? `
+      <div class="course-route">
+        ${(currentLang !== 'ko' ? translatedRoute.split(' → ') : translatedRoute.split(/[,，]/)).map((s, i, arr) => {
+          const name = s.trim();
+          const isEnd = i === 0 || i === arr.length - 1;
+          const cls = isEnd ? 'route-stop-name first' : 'route-stop-name';
+          const arrow = i < arr.length - 1 ? '<span class="route-arrow">→</span>' : '';
+          return `<div class="route-stop"><span class="${cls}">${name}</span>${arrow}</div>`;
+        }).join('')}
+      </div>` : '';
+
+    card.innerHTML = `
+      ${imgHtml}
+      <div class="course-body">
+        <div class="course-name">${t['코스명'] || ''}</div>
+        <div class="course-meta">
+          ${c['거리_Km'] || c['거리_km'] ? `<div class="meta-chip">📍 <strong>${c['거리_Km'] || c['거리_km']}km</strong></div>` : ''}
+          ${c['소요시간'] ? `<div class="meta-chip">⏱ <strong>${t['소요시간']}</strong></div>` : ''}
+          ${c['난이도'] ? `<div class="difficulty ${diffClass}">${t['난이도']}</div>` : ''}
+        </div>
+        ${routeHtml}
+        ${c['네이버맵_URL'] ? `<a class="map-btn naver" href="${c['네이버맵_URL']}" target="_blank" style="display:block; margin-top:12px; text-align:center;">${{'ko':'네이버지도에서 보기','en':'View on Naver Maps','ja':'ナバーマップで見る','zh':'在Naver地图查看','es':'Ver en Naver Maps'}[currentLang] || '네이버지도에서 보기'}</a>` : ''}
+        ${t['설명'] ? `<div class="course-desc" style="margin-top:12px;">${t['설명']}</div>` : ''}
+      </div>`;
+    list.appendChild(card);
+  }
+}
+
+// =============================================
+// 이용안내
+// =============================================
+async function loadGuide() {
+  const list = document.getElementById('guideList');
+  list.innerHTML = '<div class="loading">안내 불러오는 중...</div>';
+  try {
+    guideData = await loadSheet('이용안내');
+    await renderGuide();
+  } catch (e) {
+    list.innerHTML = '<div class="loading">데이터를 불러올 수 없어요.</div>';
+    console.error(e);
+  }
+}
+
+async function renderGuide() {
+  const list = document.getElementById('guideList');
+  if (!guideData.length) {
+    list.innerHTML = '<div class="empty-state">등록된 안내가 없습니다</div>';
+    return;
+  }
+  list.innerHTML = '';
+  const translatedGuides = await translateAll(guideData, ['제목','내용'], currentLang);
+  for (let gi = 0; gi < guideData.length; gi++) {
+    const g = guideData[gi];
+    const tg = translatedGuides[gi];
+    const title = g['제목'] || '';
+    const content = g['내용'] || '';
+    if (!title && !content) continue;
+    const tTitle = (tg['제목'] || '').replace(/\n/g, '<br>');
+    const tContent = (tg['내용'] || '').replace(/\n/g, '<br>');
+    const item = document.createElement('div');
+    item.className = 'guide-item';
+    item.innerHTML = `
+      ${tTitle ? `<div class="guide-item-title">${tTitle}</div>` : ''}
+      ${tContent ? `<div class="guide-item-content">${tContent}</div>` : ''}
+    `;
+    list.appendChild(item);
+  }
+}
+
+// =============================================
+// 후기
+// =============================================
+async function loadReviews() {
+  try {
+    reviewData = await loadSheet('후기');
+  } catch (e) {
+    console.error(e);
+  }
+}
+
+
+
+
+
+
+// =============================================
+// 언어 변경
+// =============================================
+async function changeLanguage(lang) {
+  currentLang = lang;
+  translateCache = {};
+  const uiTexts = {
+    ko: { 'txt-restaurant-title':'추천 맛집','txt-restaurant-sub':'게스트하우스 근처 엄선한 맛집들이에요','txt-course-title':'산책코스','txt-course-sub':'경주의 아름다운 길을 걸어보세요','txt-guide-title':'이용안내','txt-guide-sub':'시은재 이용에 관한 안내입니다','tab-restaurants':'🍜 맛집','tab-courses':'🚶 산책코스','tab-guide':'📋 이용안내' },
+    en: { 'txt-restaurant-title':'Recommended Restaurants','txt-restaurant-sub':'Handpicked places near the guesthouse','txt-course-title':'Walking Routes','txt-course-sub':'Explore the beautiful paths of Gyeongju','txt-guide-title':'Guest Guide','txt-guide-sub':'Information for your stay at Sieunjae','tab-restaurants':'🍜 Food','tab-courses':'🚶 Walks','tab-guide':'📋 Guide' },
+    ja: { 'txt-restaurant-title':'おすすめグルメ','txt-restaurant-sub':'ゲストハウス周辺の厳選グルメ','txt-course-title':'お散歩コース','txt-course-sub':'慶州の美しい道を歩いてみましょう','txt-guide-title':'ご利用案内','txt-guide-sub':'시은재のご利用についての案内です','tab-restaurants':'🍜 グルメ','tab-courses':'🚶 散歩','tab-guide':'📋 案内' },
+    zh: { 'txt-restaurant-title':'推荐餐厅','txt-restaurant-sub':'精选民宿附近的美食','txt-course-title':'散步路线','txt-course-sub':'漫步庆州美丽街道','txt-guide-title':'使用指南','txt-guide-sub':'시은재入住须知','tab-restaurants':'🍜 美食','tab-courses':'🚶 散步','tab-guide':'📋 指南' },
+    es: { 'txt-restaurant-title':'Restaurantes Recomendados','txt-restaurant-sub':'Lugares seleccionados cerca del alojamiento','txt-course-title':'Rutas a Pie','txt-course-sub':'Explora los hermosos caminos de Gyeongju','txt-guide-title':'Guía de uso','txt-guide-sub':'Información para su estancia en Sieunjae','tab-restaurants':'🍜 Comida','tab-courses':'🚶 Rutas','tab-guide':'📋 Guía' },
+  };
+  const texts = uiTexts[lang] || uiTexts.ko;
+  Object.entries(texts).forEach(([id, text]) => { const el = document.getElementById(id); if (el) el.textContent = text; });
+  // 현재 보이는 탭만 번역 렌더링
+  const activeTab = document.querySelector('.section.active');
+  if (activeTab) {
+    const tabId = activeTab.id;
+    if (tabId === 'section-restaurants' && restaurantData.length) await renderRestaurants();
+    if (tabId === 'section-courses' && courseData.length) await renderCourses();
+    if (tabId === 'section-guide' && guideData.length) await renderGuide();
+  }
+}
+
+// =============================================
+// 탭 전환
+// =============================================
+let loaded = { restaurants: false, courses: false, reviews: false, guide: false };
+
+async function switchTab(tab, btn) {
+  document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+  document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+  document.getElementById('section-' + tab).classList.add('active');
+  btn.classList.add('active');
+  if (!loaded[tab]) {
+    loaded[tab] = true;
+    if (tab === 'restaurants') await loadRestaurants();
+    if (tab === 'courses') await loadCourses();
+    if (tab === 'guide') await loadGuide();
+  } else if (currentLang !== 'ko') {
+    // 이미 로드됐지만 언어가 바뀐 경우 재렌더링
+    if (tab === 'restaurants' && restaurantData.length) await renderRestaurants();
+    if (tab === 'courses' && courseData.length) await renderCourses();
+    if (tab === 'guide' && guideData.length) await renderGuide();
+  }
+}
+
+// =============================================
+// 토스트
+// =============================================
+function showToast(msg) {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.classList.add('show');
+  setTimeout(() => t.classList.remove('show'), 2500);
+}
+
+// =============================================
+// 초기 로드
+// =============================================
+window.addEventListener('load', () => {
+  // 모든 탭 데이터 병렬 로드
+  loaded.guide = true;
+  loaded.restaurants = true;
+  loaded.courses = true;
+  loaded.reviews = true;
+  Promise.all([loadGuide(), loadRestaurants(), loadCourses(), loadReviews()]);
+});
+</script>
+</body>
+</html>
