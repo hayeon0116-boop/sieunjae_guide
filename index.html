@@ -110,102 +110,6 @@
   .section { display: none; padding: 20px 16px; }
   .section.active { display: block; }
 
-  /* 아코디언 */
-  .restaurant-card { cursor: pointer; }
-
-  .card-expand {
-    display: none;
-    border-top: 1px solid var(--border);
-    padding: 16px;
-    background: var(--paper);
-  }
-  .card-expand.open { display: block; }
-
-  .expand-review-title {
-    font-family: 'Noto Serif KR', serif;
-    font-size: 14px;
-    font-weight: 600;
-    color: var(--ink);
-    margin-bottom: 12px;
-    padding-bottom: 8px;
-    border-bottom: 1px solid var(--border);
-  }
-
-  .expand-no-review {
-    font-size: 12px;
-    color: var(--muted);
-    text-align: center;
-    padding: 12px 0;
-  }
-
-  .expand-review-item {
-    padding: 10px 0;
-    border-bottom: 1px solid var(--border);
-  }
-  .expand-review-item:last-child { border-bottom: none; }
-
-  .expand-review-top {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 4px;
-  }
-  .expand-review-nick { font-size: 12px; font-weight: 500; }
-  .expand-review-stars { font-size: 11px; color: var(--accent2); }
-  .expand-review-text { font-size: 12px; color: var(--muted); line-height: 1.6; }
-  .expand-review-date { font-size: 10px; color: #bbb; margin-top: 4px; text-align: right; }
-
-  .expand-more-btn {
-    width: 100%;
-    padding: 8px;
-    margin: 4px 0 8px;
-    background: transparent;
-    border: 1px solid var(--border);
-    border-radius: 5px;
-    color: var(--muted);
-    font-size: 12px;
-    font-family: 'Noto Sans KR', sans-serif;
-    cursor: pointer;
-    transition: background 0.15s;
-  }
-  .expand-more-btn:hover { background: var(--paper2); }
-
-  .expand-write-btn {
-    width: 100%;
-    padding: 10px;
-    margin-top: 12px;
-    background: transparent;
-    border: 1px dashed var(--accent);
-    border-radius: 5px;
-    color: var(--accent);
-    font-size: 13px;
-    font-family: 'Noto Sans KR', sans-serif;
-    cursor: pointer;
-    transition: background 0.15s;
-  }
-  .expand-write-btn:hover { background: var(--paper2); }
-
-  /* 후기 작성 인라인 폼 */
-  .inline-review-form {
-    display: none;
-    margin-top: 12px;
-    padding: 14px;
-    background: var(--white);
-    border: 1px solid var(--border);
-    border-radius: 8px;
-  }
-  .inline-review-form.open { display: block; }
-
-  .card-chevron {
-    font-size: 12px;
-    color: var(--muted);
-    transition: transform 0.2s;
-    margin-left: auto;
-    padding-left: 8px;
-    flex-shrink: 0;
-  }
-  .card-chevron.open { transform: rotate(180deg); }
-
   /* 이용안내 */
   .guide-item {
     background: var(--white);
@@ -454,134 +358,6 @@
   }
   .route-arrow { color: var(--accent2); font-size: 12px; flex-shrink: 0; }
 
-  /* REVIEWS */
-  .review-form {
-    background: var(--white);
-    border: 1px solid var(--border);
-    border-radius: 8px;
-    padding: 18px;
-    margin-bottom: 20px;
-  }
-
-  .form-title {
-    font-family: 'Noto Serif KR', serif;
-    font-size: 15px;
-    font-weight: 600;
-    margin-bottom: 14px;
-    color: var(--ink);
-  }
-
-  .form-group { margin-bottom: 12px; }
-
-  .form-label {
-    display: block;
-    font-size: 11px;
-    color: var(--muted);
-    letter-spacing: 0.08em;
-    margin-bottom: 5px;
-    text-transform: uppercase;
-  }
-
-  .form-input, .form-select, .form-textarea {
-    width: 100%;
-    padding: 10px 12px;
-    border: 1px solid var(--border);
-    border-radius: 5px;
-    font-family: 'Noto Sans KR', sans-serif;
-    font-size: 13px;
-    background: var(--paper);
-    color: var(--ink);
-    outline: none;
-    transition: border-color 0.2s;
-  }
-  .form-input:focus, .form-select:focus, .form-textarea:focus {
-    border-color: var(--accent);
-  }
-  .form-textarea {
-    resize: vertical;
-    min-height: 80px;
-  }
-
-  .star-row {
-    display: flex;
-    gap: 6px;
-    margin-top: 4px;
-  }
-  .star-btn {
-    font-size: 24px;
-    background: none;
-    border: none;
-    cursor: pointer;
-    color: #ddd;
-    transition: color 0.1s, transform 0.1s;
-    padding: 0;
-    line-height: 1;
-  }
-  .star-btn.active { color: var(--accent2); }
-  .star-btn:active { transform: scale(1.2); }
-
-  .submit-btn {
-    width: 100%;
-    padding: 12px;
-    background: var(--accent);
-    color: var(--white);
-    border: none;
-    border-radius: 5px;
-    font-family: 'Noto Sans KR', sans-serif;
-    font-size: 14px;
-    font-weight: 500;
-    cursor: pointer;
-    margin-top: 4px;
-    transition: opacity 0.15s;
-    letter-spacing: 0.05em;
-  }
-  .submit-btn:active { opacity: 0.8; }
-  .submit-btn:disabled { opacity: 0.5; cursor: not-allowed; }
-
-  .review-list { margin-top: 4px; }
-
-  .review-item {
-    background: var(--white);
-    border: 1px solid var(--border);
-    border-radius: 8px;
-    padding: 14px 16px;
-    margin-bottom: 10px;
-  }
-
-  .review-top {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    margin-bottom: 6px;
-  }
-
-  .review-nick {
-    font-weight: 500;
-    font-size: 13px;
-  }
-
-  .review-stars { color: var(--accent2); font-size: 13px; letter-spacing: 2px; }
-
-  .review-restaurant {
-    font-size: 11px;
-    color: var(--accent);
-    margin-bottom: 6px;
-    font-weight: 400;
-  }
-
-  .review-text {
-    font-size: 13px;
-    color: var(--muted);
-    line-height: 1.7;
-  }
-
-  .review-date {
-    font-size: 10px;
-    color: #bbb;
-    margin-top: 6px;
-    text-align: right;
-  }
-
   /* TOAST */
   .toast {
     position: fixed;
@@ -666,7 +442,7 @@
 <div class="section" id="section-restaurants">
   <div class="section-header">
     <h2 id="txt-restaurant-title">추천 맛집</h2>
-    <p id="txt-restaurant-sub">게스트하우스 근처 엄선한 맛집들이에요</p>
+    <p id="txt-restaurant-sub">시은재 근처 엄선한 맛집들이에요</p>
   </div>
   <div class="restaurant-grid" id="restaurantGrid">
     <div class="loading" id="txt-loading-r">맛집 불러오는 중...</div>
@@ -709,12 +485,10 @@ const APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbxvfpOumplD1E4a
 // =============================================
 // 상태
 // =============================================
-let selectedStar = 0;
 let currentLang = 'ko';
 let translateCache = {};
 let restaurantData = [];
 let courseData = [];
-let reviewData = [];
 let guideData = [];
 
 // =============================================
@@ -855,167 +629,19 @@ async function renderRestaurants() {
       : '';
     card.innerHTML = `
       ${imgHtml}
-      <div class="card-body" onclick="toggleCard(this)">
+      <div class="card-body">
         <div class="card-top">
           <div class="card-name">${t['이름'] || ''}</div>
           <div class="card-category">${t['카테고리'] || ''}</div>
-          <span class="card-chevron">▼</span>
         </div>
         ${t['추천메뉴'] ? `<div class="card-menu">${t['추천메뉴']}</div>` : ''}
         ${t['설명'] ? `<div class="card-desc">${t['설명'].replace(/\n/g, '<br>')}</div>` : ''}
-        <div class="card-links" onclick="event.stopPropagation()">
+        <div class="card-links">
           ${r['네이버맵_URL'] ? `<a class="map-btn naver" href="${r['네이버맵_URL']}" target="_blank">${{'ko':'네이버지도','en':'Naver Maps','ja':'ナバーマップ','zh':'Naver地图','es':'Naver Maps'}[currentLang]||'네이버지도'}</a>` : ''}
           ${r['구글맵_URL']   ? `<a class="map-btn google" href="${r['구글맵_URL']}"   target="_blank">Google Maps</a>` : ''}
         </div>
-      </div>
-      <div class="card-expand" data-restaurant="${restaurantName}">
-        <div class="expand-review-title">✍️ 후기</div>
-        <div class="expand-review-list"><div class="expand-no-review">후기를 불러오는 중...</div></div>
-        <button class="expand-more-btn" onclick="toggleMoreReviews(this)" style="display:none;">▼ 후기 더보기</button>
-        <button class="expand-write-btn" onclick="toggleWriteForm(this)">✍️ 후기 작성하기</button>
-        <div class="inline-review-form">
-          <div class="form-group">
-            <label class="form-label">닉네임</label>
-            <input class="form-input review-nick" type="text" maxlength="20">
-          </div>
-          <div class="form-group">
-            <label class="form-label">별점</label>
-            <div class="star-row">
-              <button class="star-btn" onclick="setStarInline(this,1)">★</button>
-              <button class="star-btn" onclick="setStarInline(this,2)">★</button>
-              <button class="star-btn" onclick="setStarInline(this,3)">★</button>
-              <button class="star-btn" onclick="setStarInline(this,4)">★</button>
-              <button class="star-btn" onclick="setStarInline(this,5)">★</button>
-            </div>
-          </div>
-          <div class="form-group">
-            <label class="form-label">내용</label>
-            <textarea class="form-textarea review-content" rows="3" maxlength="300"></textarea>
-          </div>
-          <button class="submit-btn" onclick="submitInlineReview(this, '${restaurantName}')">후기 남기기</button>
-        </div>
       </div>`;
     grid.appendChild(card);
-  }
-  // 후기 데이터 로드 후 각 카드에 반영
-  await loadReviews();
-  updateAllReviewLists();
-}
-
-function toggleCard(cardBody) {
-  const expand = cardBody.nextElementSibling;
-  const chevron = cardBody.querySelector('.card-chevron');
-  const isOpen = expand.classList.contains('open');
-  // 다른 카드 닫기
-  document.querySelectorAll('.card-expand.open').forEach(e => {
-    e.classList.remove('open');
-    e.previousElementSibling.querySelector('.card-chevron')?.classList.remove('open');
-  });
-  if (!isOpen) {
-    expand.classList.add('open');
-    chevron?.classList.add('open');
-  }
-}
-
-function toggleWriteForm(btn) {
-  const form = btn.nextElementSibling;
-  form.classList.toggle('open');
-  btn.textContent = form.classList.contains('open') ? '✕ 취소' : '+ 후기 남기기';
-}
-
-function setStarInline(btn, n) {
-  const row = btn.closest('.star-row');
-  row.querySelectorAll('.star-btn').forEach((b, i) => b.classList.toggle('active', i < n));
-  row.dataset.star = n;
-}
-
-async function submitInlineReview(btn, restaurantName) {
-  const form = btn.closest('.inline-review-form');
-  const nick = form.querySelector('.review-nick').value.trim();
-  const content = form.querySelector('.review-content').value.trim();
-  const star = parseInt(form.querySelector('.star-row').dataset.star || '0');
-  if (!nick || !content || !star) { showToast('모든 항목을 입력해주세요'); return; }
-
-  btn.disabled = true; btn.textContent = '저장 중...';
-  try {
-    const now = new Date().toLocaleString('ko-KR');
-    const params = new URLSearchParams({
-      action: 'addReview',
-      작성일시: now,
-      닉네임: nick,
-      식당이름: restaurantName,
-      별점: star,
-      내용: content,
-      언어: 'ko'
-    });
-    await fetch(`${APPS_SCRIPT_URL}?${params}`);
-    reviewData.push({ 작성일시: now, 닉네임: nick, 식당이름: restaurantName, 별점: star, 내용: content });
-    updateAllReviewLists();
-    form.querySelector('.review-nick').value = '';
-    form.querySelector('.review-content').value = '';
-    form.querySelector('.star-row').querySelectorAll('.star-btn').forEach(b => b.classList.remove('active'));
-    form.querySelector('.star-row').dataset.star = '0';
-    form.classList.remove('open');
-    form.previousElementSibling.textContent = '+ 후기 남기기';
-    showToast('후기가 등록됐어요 🙏');
-  } catch(e) { showToast('저장에 실패했어요'); }
-  btn.disabled = false; btn.textContent = '후기 남기기';
-}
-
-function renderReviewItems(reviews) {
-  return reviews.map(r => `
-    <div class="expand-review-item">
-      <div class="expand-review-top">
-        <span class="expand-review-nick">${r['닉네임'] || '익명'}</span>
-        <span class="expand-review-stars">${'★'.repeat(parseInt(r['별점']) || 0)}</span>
-      </div>
-      <div class="expand-review-text">${(r['내용'] || '').replace(/\n/g, '<br>')}</div>
-      <div class="expand-review-date">${r['작성일시'] || ''}</div>
-    </div>`).join('');
-}
-
-function updateAllReviewLists() {
-  document.querySelectorAll('.card-expand').forEach(expand => {
-    const name = expand.dataset.restaurant;
-    const list = expand.querySelector('.expand-review-list');
-    const moreBtn = expand.querySelector('.expand-more-btn');
-    const matched = [...reviewData.filter(r => r['식당이름'] === name)].reverse();
-
-    if (!matched.length) {
-      list.innerHTML = '<div class="expand-no-review">아직 후기가 없어요</div>';
-      moreBtn.style.display = 'none';
-      return;
-    }
-
-    const MAX = 3;
-    list.innerHTML = renderReviewItems(matched.slice(0, MAX));
-    list.dataset.all = JSON.stringify(matched);
-
-    if (matched.length > MAX) {
-      moreBtn.style.display = 'block';
-      moreBtn.textContent = `▼ 후기 더보기 (${matched.length - MAX}개)`;
-      moreBtn.dataset.expanded = 'false';
-    } else {
-      moreBtn.style.display = 'none';
-    }
-  });
-}
-
-function toggleMoreReviews(btn) {
-  const expand = btn.closest('.card-expand');
-  const list = expand.querySelector('.expand-review-list');
-  const all = JSON.parse(list.dataset.all || '[]');
-  const isExpanded = btn.dataset.expanded === 'true';
-  const MAX = 3;
-
-  if (isExpanded) {
-    list.innerHTML = renderReviewItems(all.slice(0, MAX));
-    btn.textContent = `▼ 후기 더보기 (${all.length - MAX}개)`;
-    btn.dataset.expanded = 'false';
-  } else {
-    list.innerHTML = renderReviewItems(all);
-    btn.textContent = '▲ 접기';
-    btn.dataset.expanded = 'true';
   }
 }
 
@@ -1132,20 +758,6 @@ async function renderGuide() {
   }
 }
 
-// =============================================
-// 후기
-// =============================================
-async function loadReviews() {
-  try {
-    reviewData = await loadSheet('후기');
-  } catch (e) {
-    console.error(e);
-  }
-}
-
-
-
-
 
 
 // =============================================
@@ -1155,11 +767,11 @@ async function changeLanguage(lang) {
   currentLang = lang;
   translateCache = {};
   const uiTexts = {
-    ko: { 'txt-restaurant-title':'추천 맛집','txt-restaurant-sub':'게스트하우스 근처 엄선한 맛집들이에요','txt-course-title':'산책코스','txt-course-sub':'경주의 아름다운 길을 걸어보세요','txt-guide-title':'이용안내','txt-guide-sub':'시은재 이용에 관한 안내입니다','tab-restaurants':'🍜 맛집','tab-courses':'🚶 산책코스','tab-guide':'📋 이용안내' },
-    en: { 'txt-restaurant-title':'Recommended Restaurants','txt-restaurant-sub':'Handpicked places near the guesthouse','txt-course-title':'Walking Routes','txt-course-sub':'Explore the beautiful paths of Gyeongju','txt-guide-title':'Guest Guide','txt-guide-sub':'Information for your stay at Sieunjae','tab-restaurants':'🍜 Food','tab-courses':'🚶 Walks','tab-guide':'📋 Guide' },
-    ja: { 'txt-restaurant-title':'おすすめグルメ','txt-restaurant-sub':'ゲストハウス周辺の厳選グルメ','txt-course-title':'お散歩コース','txt-course-sub':'慶州の美しい道を歩いてみましょう','txt-guide-title':'ご利用案内','txt-guide-sub':'시은재のご利用についての案内です','tab-restaurants':'🍜 グルメ','tab-courses':'🚶 散歩','tab-guide':'📋 案内' },
-    zh: { 'txt-restaurant-title':'推荐餐厅','txt-restaurant-sub':'精选民宿附近的美食','txt-course-title':'散步路线','txt-course-sub':'漫步庆州美丽街道','txt-guide-title':'使用指南','txt-guide-sub':'시은재入住须知','tab-restaurants':'🍜 美食','tab-courses':'🚶 散步','tab-guide':'📋 指南' },
-    es: { 'txt-restaurant-title':'Restaurantes Recomendados','txt-restaurant-sub':'Lugares seleccionados cerca del alojamiento','txt-course-title':'Rutas a Pie','txt-course-sub':'Explora los hermosos caminos de Gyeongju','txt-guide-title':'Guía de uso','txt-guide-sub':'Información para su estancia en Sieunjae','tab-restaurants':'🍜 Comida','tab-courses':'🚶 Rutas','tab-guide':'📋 Guía' },
+    ko: { 'txt-restaurant-title':'추천 맛집','txt-restaurant-sub':'시은재 근처 엄선한 맛집들이에요','txt-course-title':'산책코스','txt-course-sub':'경주의 아름다운 길을 걸어보세요','txt-guide-title':'이용안내','txt-guide-sub':'시은재 이용에 관한 안내입니다','tab-restaurants':'🍜 맛집','tab-courses':'🚶 산책코스','tab-guide':'📋 이용안내' },
+    en: { 'txt-restaurant-title':'Recommended Restaurants','txt-restaurant-sub':'Handpicked places near Sieunjae','txt-course-title':'Walking Routes','txt-course-sub':'Explore the beautiful paths of Gyeongju','txt-guide-title':'Guest Guide','txt-guide-sub':'Information for your stay at Sieunjae','tab-restaurants':'🍜 Food','tab-courses':'🚶 Walks','tab-guide':'📋 Guide' },
+    ja: { 'txt-restaurant-title':'おすすめグルメ','txt-restaurant-sub':'シウンジェ周辺の厳選グルメ','txt-course-title':'お散歩コース','txt-course-sub':'慶州の美しい道を歩いてみましょう','txt-guide-title':'ご利用案内','txt-guide-sub':'시은재のご利用についての案内です','tab-restaurants':'🍜 グルメ','tab-courses':'🚶 散歩','tab-guide':'📋 案内' },
+    zh: { 'txt-restaurant-title':'推荐餐厅','txt-restaurant-sub':'Sieunjae附近精选美食','txt-course-title':'散步路线','txt-course-sub':'漫步庆州美丽街道','txt-guide-title':'使用指南','txt-guide-sub':'시은재入住须知','tab-restaurants':'🍜 美食','tab-courses':'🚶 散步','tab-guide':'📋 指南' },
+    es: { 'txt-restaurant-title':'Restaurantes Recomendados','txt-restaurant-sub':'Lugares seleccionados cerca de Sieunjae','txt-course-title':'Rutas a Pie','txt-course-sub':'Explora los hermosos caminos de Gyeongju','txt-guide-title':'Guía de uso','txt-guide-sub':'Información para su estancia en Sieunjae','tab-restaurants':'🍜 Comida','tab-courses':'🚶 Rutas','tab-guide':'📋 Guía' },
   };
   const texts = uiTexts[lang] || uiTexts.ko;
   Object.entries(texts).forEach(([id, text]) => { const el = document.getElementById(id); if (el) el.textContent = text; });
@@ -1176,7 +788,7 @@ async function changeLanguage(lang) {
 // =============================================
 // 탭 전환
 // =============================================
-let loaded = { restaurants: false, courses: false, reviews: false, guide: false };
+let loaded = { restaurants: false, courses: false, guide: false };
 
 async function switchTab(tab, btn) {
   document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
@@ -1214,8 +826,7 @@ window.addEventListener('load', () => {
   loaded.guide = true;
   loaded.restaurants = true;
   loaded.courses = true;
-  loaded.reviews = true;
-  Promise.all([loadGuide(), loadRestaurants(), loadCourses(), loadReviews()]);
+  Promise.all([loadGuide(), loadRestaurants(), loadCourses()]);
 });
 </script>
 </body>
