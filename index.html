@@ -395,6 +395,40 @@
     line-height: 1.6;
   }
 
+  /* CATEGORY FILTER */
+  .category-filter {
+    display: flex;
+    gap: 8px;
+    margin-bottom: 16px;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
+    padding-bottom: 2px;
+  }
+  .category-filter::-webkit-scrollbar { display: none; }
+
+  .category-chip {
+    flex-shrink: 0;
+    padding: 7px 14px;
+    border-radius: 20px;
+    border: 1px solid var(--border);
+    background: var(--white);
+    color: var(--muted);
+    font-size: 12px;
+    font-family: 'Noto Sans KR', sans-serif;
+    font-weight: 400;
+    cursor: pointer;
+    transition: all 0.15s;
+    white-space: nowrap;
+  }
+  .category-chip:hover { background: var(--paper2); }
+  .category-chip.active {
+    background: var(--accent);
+    color: var(--white);
+    border-color: var(--accent);
+    font-weight: 500;
+  }
+
   .empty-state {
     text-align: center;
     padding: 40px 20px;
@@ -444,6 +478,7 @@
     <h2 id="txt-restaurant-title">추천 맛집</h2>
     <p id="txt-restaurant-sub">시은재 근처 엄선한 맛집들이에요</p>
   </div>
+  <div class="category-filter" id="categoryFilter"></div>
   <div class="restaurant-grid" id="restaurantGrid">
     <div class="loading" id="txt-loading-r">맛집 불러오는 중...</div>
   </div>
@@ -490,6 +525,17 @@ let translateCache = {};
 let restaurantData = [];
 let courseData = [];
 let guideData = [];
+let currentCategoryFilter = 'all';
+
+// 카테고리 (데이터의 카테고리 컬럼 값과 일치해야 함)
+const CATEGORIES = ['한식', '일식', '중식', '양식', '카페', '기타'];
+const CATEGORY_LABELS = {
+  ko: { all: '전체', '한식': '한식', '일식': '일식', '중식': '중식', '양식': '양식', '카페': '카페', '기타': '기타' },
+  en: { all: 'All',  '한식': 'Korean', '일식': 'Japanese', '중식': 'Chinese', '양식': 'Western', '카페': 'Cafe', '기타': 'Others' },
+  ja: { all: 'すべて', '한식': '韓国料理', '일식': '日本料理', '중식': '中華料理', '양식': '洋食', '카페': 'カフェ', '기타': 'その他' },
+  zh: { all: '全部',   '한식': '韩餐', '일식': '日餐', '중식': '中餐', '양식': '西餐', '카페': '咖啡厅', '기타': '其他' },
+  es: { all: 'Todos',  '한식': 'Coreano', '일식': 'Japonés', '중식': 'Chino', '양식': 'Occidental', '카페': 'Café', '기타': 'Otros' }
+};
 
 // =============================================
 // 번역 (Google Translate API - 배치)
@@ -602,6 +648,7 @@ async function loadRestaurants() {
   grid.innerHTML = '<div class="loading">맛집 불러오는 중...</div>';
   try {
     restaurantData = await loadSheet('맛집');
+    renderCategoryFilter();
     await renderRestaurants();
   } catch (e) {
     grid.innerHTML = '<div class="loading">데이터를 불러올 수 없어요.<br>잠시 후 다시 시도해주세요.</div>';
@@ -609,9 +656,29 @@ async function loadRestaurants() {
   }
 }
 
+function renderCategoryFilter() {
+  const container = document.getElementById('categoryFilter');
+  if (!container) return;
+  const labels = CATEGORY_LABELS[currentLang] || CATEGORY_LABELS.ko;
+  const items = ['all', ...CATEGORIES];
+  container.innerHTML = items.map(cat => `
+    <button class="category-chip${cat === currentCategoryFilter ? ' active' : ''}" onclick="setCategoryFilter('${cat}')">${labels[cat]}</button>
+  `).join('');
+}
+
+function setCategoryFilter(cat) {
+  if (currentCategoryFilter === cat) return;
+  currentCategoryFilter = cat;
+  renderCategoryFilter();
+  renderRestaurants();
+}
+
 async function renderRestaurants() {
   const grid = document.getElementById('restaurantGrid');
-  const filtered = restaurantData.filter(r => String(r['표시여부']).toUpperCase() !== 'N');
+  let filtered = restaurantData.filter(r => String(r['표시여부']).toUpperCase() !== 'N');
+  if (currentCategoryFilter !== 'all') {
+    filtered = filtered.filter(r => String(r['카테고리'] || '').trim() === currentCategoryFilter);
+  }
   if (!filtered.length) {
     grid.innerHTML = '<div class="empty-state">등록된 맛집이 없습니다</div>';
     return;
@@ -775,6 +842,8 @@ async function changeLanguage(lang) {
   };
   const texts = uiTexts[lang] || uiTexts.ko;
   Object.entries(texts).forEach(([id, text]) => { const el = document.getElementById(id); if (el) el.textContent = text; });
+  // 카테고리 필터 칩 라벨도 갱신
+  renderCategoryFilter();
   // 현재 보이는 탭만 번역 렌더링
   const activeTab = document.querySelector('.section.active');
   if (activeTab) {
