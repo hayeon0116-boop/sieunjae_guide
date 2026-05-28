@@ -126,10 +126,11 @@
     margin-bottom: 8px;
   }
   .guide-item-content {
-    font-size: 13px;
-    color: var(--muted);
+    font-size: 15px;
+    color: var(--ink);
     line-height: 1.8;
   }
+  .guide-item-content b, .guide-item-content strong { font-weight: 600; }
 
   /* LOADING / ERROR */
   .loading {
@@ -563,7 +564,7 @@ async function translateAll(items, fieldsList, targetLang) {
         {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ q: toTranslate, source: 'ko', target: targetLang, format: 'text' })
+          body: JSON.stringify({ q: toTranslate, source: 'ko', target: targetLang, format: 'html' })
         }
       );
       const data = await res.json();
@@ -615,7 +616,7 @@ async function translateText(text, targetLang) {
       {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ q: [text], source: 'ko', target: targetLang, format: 'text' })
+        body: JSON.stringify({ q: [text], source: 'ko', target: targetLang, format: 'html' })
       }
     );
     const data = await res.json();
