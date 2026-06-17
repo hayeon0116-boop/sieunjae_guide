@@ -463,6 +463,7 @@
     <option value="ja">日本語</option>
     <option value="zh">中文</option>
     <option value="es">Español</option>
+    <option value="fr">Français</option>
   </select>
 
 </header>
@@ -535,7 +536,8 @@ const CATEGORY_LABELS = {
   en: { all: 'All',  '한식': 'Korean', '일식': 'Japanese', '중식': 'Chinese', '양식': 'Western', '카페': 'Cafe', '기타': 'Others' },
   ja: { all: 'すべて', '한식': '韓国料理', '일식': '日本料理', '중식': '中華料理', '양식': '洋食', '카페': 'カフェ', '기타': 'その他' },
   zh: { all: '全部',   '한식': '韩餐', '일식': '日餐', '중식': '中餐', '양식': '西餐', '카페': '咖啡厅', '기타': '其他' },
-  es: { all: 'Todos',  '한식': 'Coreano', '일식': 'Japonés', '중식': 'Chino', '양식': 'Occidental', '카페': 'Café', '기타': 'Otros' }
+  es: { all: 'Todos',  '한식': 'Coreano', '일식': 'Japonés', '중식': 'Chino', '양식': 'Occidental', '카페': 'Café', '기타': 'Otros' },
+  fr: { all: 'Tous',   '한식': 'Coréen', '일식': 'Japonais', '중식': 'Chinois', '양식': 'Occidental', '카페': 'Café', '기타': 'Autres' }
 };
 
 // =============================================
@@ -705,7 +707,7 @@ async function renderRestaurants() {
         ${t['추천메뉴'] ? `<div class="card-menu">${t['추천메뉴']}</div>` : ''}
         ${t['설명'] ? `<div class="card-desc">${t['설명'].replace(/\n/g, '<br>')}</div>` : ''}
         <div class="card-links">
-          ${r['네이버맵_URL'] ? `<a class="map-btn naver" href="${r['네이버맵_URL']}" target="_blank">${{'ko':'네이버지도','en':'Naver Maps','ja':'ナバーマップ','zh':'Naver地图','es':'Naver Maps'}[currentLang]||'네이버지도'}</a>` : ''}
+          ${r['네이버맵_URL'] ? `<a class="map-btn naver" href="${r['네이버맵_URL']}" target="_blank">${{'ko':'네이버지도','en':'Naver Maps','ja':'ナバーマップ','zh':'Naver地图','es':'Naver Maps','fr':'Naver Maps'}[currentLang]||'네이버지도'}</a>` : ''}
           ${r['구글맵_URL']   ? `<a class="map-btn google" href="${r['구글맵_URL']}"   target="_blank">Google Maps</a>` : ''}
         </div>
       </div>`;
@@ -778,7 +780,7 @@ async function renderCourses() {
           ${c['난이도'] ? `<div class="difficulty ${diffClass}">${t['난이도']}</div>` : ''}
         </div>
         ${routeHtml}
-        ${c['네이버맵_URL'] ? `<a class="map-btn naver" href="${c['네이버맵_URL']}" target="_blank" style="display:block; margin-top:12px; text-align:center;">${{'ko':'네이버지도에서 보기','en':'View on Naver Maps','ja':'ナバーマップで見る','zh':'在Naver地图查看','es':'Ver en Naver Maps'}[currentLang] || '네이버지도에서 보기'}</a>` : ''}
+        ${c['네이버맵_URL'] ? `<a class="map-btn naver" href="${c['네이버맵_URL']}" target="_blank" style="display:block; margin-top:12px; text-align:center;">${{'ko':'네이버지도에서 보기','en':'View on Naver Maps','ja':'ナバーマップで見る','zh':'在Naver地图查看','es':'Ver en Naver Maps','fr':'Voir sur Naver Maps'}[currentLang] || '네이버지도에서 보기'}</a>` : ''}
         ${t['설명'] ? `<div class="course-desc" style="margin-top:12px;">${t['설명'].replace(/\n/g, '<br>')}</div>` : ''}
       </div>`;
     list.appendChild(card);
@@ -840,6 +842,7 @@ async function changeLanguage(lang) {
     ja: { 'txt-restaurant-title':'おすすめグルメ','txt-restaurant-sub':'シウンジェ周辺の厳選グルメ','txt-course-title':'お散歩コース','txt-course-sub':'慶州の美しい道を歩いてみましょう','txt-guide-title':'ご利用案内','txt-guide-sub':'시은재のご利用についての案内です','tab-restaurants':'🍜 グルメ','tab-courses':'🚶 散歩','tab-guide':'📋 案内' },
     zh: { 'txt-restaurant-title':'推荐餐厅','txt-restaurant-sub':'Sieunjae附近精选美食','txt-course-title':'散步路线','txt-course-sub':'漫步庆州美丽街道','txt-guide-title':'使用指南','txt-guide-sub':'시은재入住须知','tab-restaurants':'🍜 美食','tab-courses':'🚶 散步','tab-guide':'📋 指南' },
     es: { 'txt-restaurant-title':'Restaurantes Recomendados','txt-restaurant-sub':'Lugares seleccionados cerca de Sieunjae','txt-course-title':'Rutas a Pie','txt-course-sub':'Explora los hermosos caminos de Gyeongju','txt-guide-title':'Guía de uso','txt-guide-sub':'Información para su estancia en Sieunjae','tab-restaurants':'🍜 Comida','tab-courses':'🚶 Rutas','tab-guide':'📋 Guía' },
+    fr: { 'txt-restaurant-title':'Restaurants recommandés','txt-restaurant-sub':'Adresses sélectionnées près de Sieunjae','txt-course-title':'Itinéraires de promenade','txt-course-sub':'Découvrez les beaux chemins de Gyeongju','txt-guide-title':'Guide d\'utilisation','txt-guide-sub':'Informations sur votre séjour à Sieunjae','tab-restaurants':'🍜 Cuisine','tab-courses':'🚶 Promenades','tab-guide':'📋 Guide' },
   };
   const texts = uiTexts[lang] || uiTexts.ko;
   Object.entries(texts).forEach(([id, text]) => { const el = document.getElementById(id); if (el) el.textContent = text; });
