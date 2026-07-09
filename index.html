@@ -208,14 +208,6 @@
     flex-shrink: 0;
   }
 
-  .card-menu {
-    font-size: 12px;
-    color: var(--accent2);
-    margin-bottom: 8px;
-    font-weight: 400;
-  }
-  .card-menu::before { content: '✦ '; }
-
   .card-desc {
     font-size: 13px;
     color: var(--muted);
@@ -471,14 +463,14 @@
 <div class="tabs">
   <button class="tab-btn active" onclick="switchTab('guide', this)" id="tab-guide">📋 이용안내</button>
   <button class="tab-btn" onclick="switchTab('restaurants', this)" id="tab-restaurants">🍜 맛집</button>
-  <button class="tab-btn" onclick="switchTab('courses', this)" id="tab-courses">🚶 산책코스</button>
+  <button class="tab-btn" onclick="switchTab('courses', this)" id="tab-courses">🎯 액티비티</button>
 </div>
 
 <!-- 맛집 섹션 -->
 <div class="section" id="section-restaurants">
   <div class="section-header">
     <h2 id="txt-restaurant-title">추천 맛집</h2>
-    <p id="txt-restaurant-sub">시은재 근처 엄선한 맛집들이에요</p>
+    <p id="txt-restaurant-sub">시은재 근처 추천하는 맛집들이에요</p>
   </div>
   <div class="category-filter" id="categoryFilter"></div>
   <div class="restaurant-grid" id="restaurantGrid">
@@ -486,14 +478,15 @@
   </div>
 </div>
 
-<!-- 산책코스 섹션 -->
+<!-- 액티비티 섹션 -->
 <div class="section" id="section-courses">
   <div class="section-header">
-    <h2 id="txt-course-title">산책코스</h2>
-    <p id="txt-course-sub">경주의 아름다운 길을 걸어보세요</p>
+    <h2 id="txt-course-title">액티비티</h2>
+    <p id="txt-course-sub">경주에서 즐길 수 있는 다양한 액티비티예요</p>
   </div>
+  <div class="category-filter" id="activityCategoryFilter"></div>
   <div id="courseList">
-    <div class="loading" id="txt-loading-c">코스 불러오는 중...</div>
+    <div class="loading" id="txt-loading-c">액티비티 불러오는 중...</div>
   </div>
 </div>
 
@@ -505,6 +498,7 @@
     <h2 id="txt-guide-title">이용안내</h2>
     <p id="txt-guide-sub">시은재 이용에 관한 안내입니다</p>
   </div>
+  <div class="category-filter" id="guideCategoryFilter"></div>
   <div id="guideList">
     <div class="loading">안내 불러오는 중...</div>
   </div>
@@ -528,6 +522,8 @@ let restaurantData = [];
 let courseData = [];
 let guideData = [];
 let currentCategoryFilter = 'all';
+let currentGuideCategoryFilter = 'all';
+let currentActivityCategoryFilter = 'all';
 
 // 카테고리 (데이터의 카테고리 컬럼 값과 일치해야 함)
 const CATEGORIES = ['한식', '일식', '중식', '양식', '카페', '기타'];
@@ -651,6 +647,11 @@ async function loadRestaurants() {
   grid.innerHTML = '<div class="loading">맛집 불러오는 중...</div>';
   try {
     restaurantData = await loadSheet('맛집');
+    // 세션 당 1회 셔플 (Fisher-Yates) — 새로고침해야 새 순서
+    for (let i = restaurantData.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      [restaurantData[i], restaurantData[j]] = [restaurantData[j], restaurantData[i]];
+    }
     renderCategoryFilter();
     await renderRestaurants();
   } catch (e) {
@@ -687,7 +688,7 @@ async function renderRestaurants() {
     return;
   }
   grid.innerHTML = '';
-  const translatedRestaurants = await translateAll(filtered, ['이름','카테고리','추천메뉴','설명'], currentLang);
+  const translatedRestaurants = await translateAll(filtered, ['이름','카테고리','설명'], currentLang);
   for (let i = 0; i < filtered.length; i++) {
     const r = filtered[i];
     const t = translatedRestaurants[i];
@@ -704,7 +705,6 @@ async function renderRestaurants() {
           <div class="card-name">${t['이름'] || ''}</div>
           <div class="card-category">${t['카테고리'] || ''}</div>
         </div>
-        ${t['추천메뉴'] ? `<div class="card-menu">${t['추천메뉴']}</div>` : ''}
         ${t['설명'] ? `<div class="card-desc">${t['설명'].replace(/\n/g, '<br>')}</div>` : ''}
         <div class="card-links">
           ${r['네이버맵_URL'] ? `<a class="map-btn naver" href="${r['네이버맵_URL']}" target="_blank">${{'ko':'네이버지도','en':'Naver Maps','ja':'ナバーマップ','zh':'Naver地图','es':'Naver Maps','fr':'Naver Maps'}[currentLang]||'네이버지도'}</a>` : ''}
@@ -716,13 +716,13 @@ async function renderRestaurants() {
 }
 
 // =============================================
-// 산책코스 렌더링
+// 액티비티 렌더링
 // =============================================
 async function loadCourses() {
   const list = document.getElementById('courseList');
   list.innerHTML = '<div class="loading">코스 불러오는 중...</div>';
   try {
-    courseData = await loadSheet('산책');
+    courseData = await loadSheet('액티비티');
     await renderCourses();
   } catch (e) {
     list.innerHTML = '<div class="loading">데이터를 불러올 수 없어요.</div>';
@@ -734,15 +734,23 @@ async function loadCourses() {
 
 async function renderCourses() {
   const list = document.getElementById('courseList');
-  const filtered = courseData.filter(c => String(c['표시여부']).toUpperCase() !== 'N');
-  if (!filtered.length) {
-    list.innerHTML = '<div class="empty-state">등록된 코스가 없습니다</div>';
+  const visible = courseData.filter(c => String(c['표시여부']).toUpperCase() !== 'N');
+  if (!visible.length) {
+    list.innerHTML = '<div class="empty-state">등록된 액티비티가 없습니다</div>';
+    document.getElementById('activityCategoryFilter').innerHTML = '';
     return;
   }
+  // 항목까지 함께 번역 (칩 라벨용)
+  const translatedCourses = await translateAll(visible, ['체험명','설명','난이도','소요시간','경로','항목'], currentLang);
+
+  renderActivityCategoryFilter();
+
   list.innerHTML = '';
-  const translatedCourses = await translateAll(filtered, ['코스명','설명','난이도','소요시간','경로'], currentLang);
-  for (let i = 0; i < filtered.length; i++) {
-    const c = filtered[i];
+  for (let i = 0; i < visible.length; i++) {
+    const c = visible[i];
+    // 카테고리 필터 적용 (raw 한국어 값으로 비교)
+    if (currentActivityCategoryFilter !== 'all'
+        && String(c['항목'] || '').trim() !== currentActivityCategoryFilter) continue;
     const t = translatedCourses[i];
     // 경로 표시용 변환
     let translatedRoute = c['경로'] || '';
@@ -754,8 +762,8 @@ async function renderCourses() {
     card.className = 'course-card';
 
     // 이미지
-    const imgHtml = c['코스이미지_URL']
-      ? `<img class="course-map-img" src="${c['코스이미지_URL']}" alt="코스 지도" onerror="this.remove()">`
+    const imgHtml = c['이미지_URL']
+      ? `<img class="course-map-img" src="${c['이미지_URL']}" alt="액티비티 이미지" onerror="this.remove()">`
       : `<div class="course-map-placeholder">🗺️ 이미지 준비 중</div>`;
 
     // 경로 표시 (→ 로 구분)
@@ -773,7 +781,7 @@ async function renderCourses() {
     card.innerHTML = `
       ${imgHtml}
       <div class="course-body">
-        <div class="course-name">${t['코스명'] || ''}</div>
+        <div class="course-name">${t['체험명'] || ''}</div>
         <div class="course-meta">
           ${c['거리_Km'] || c['거리_km'] ? `<div class="meta-chip">📍 <strong>${c['거리_Km'] || c['거리_km']}km</strong></div>` : ''}
           ${c['소요시간'] ? `<div class="meta-chip">⏱ <strong>${t['소요시간']}</strong></div>` : ''}
@@ -785,6 +793,36 @@ async function renderCourses() {
       </div>`;
     list.appendChild(card);
   }
+}
+
+function renderActivityCategoryFilter() {
+  const container = document.getElementById('activityCategoryFilter');
+  if (!container) return;
+  const visible = courseData.filter(c => String(c['표시여부']).toUpperCase() !== 'N');
+  const categories = [...new Set(
+    visible.map(c => String(c['항목'] || '').trim()).filter(Boolean)
+  )];
+  if (!categories.length) {
+    container.innerHTML = '';
+    return;
+  }
+  if (!categories.includes(currentActivityCategoryFilter)) {
+    currentActivityCategoryFilter = categories[0];
+  }
+  container.innerHTML = categories.map(cat => {
+    const label = currentLang === 'ko'
+      ? cat
+      : (translateCache[currentLang + '::' + cat] || cat);
+    const active = cat === currentActivityCategoryFilter ? ' active' : '';
+    const safe = cat.replace(/\\/g, '\\\\').replace(/'/g, "\\'");
+    return `<button class="category-chip${active}" onclick="setActivityCategoryFilter('${safe}')">${label}</button>`;
+  }).join('');
+}
+
+function setActivityCategoryFilter(cat) {
+  if (currentActivityCategoryFilter === cat) return;
+  currentActivityCategoryFilter = cat;
+  renderCourses();
 }
 
 // =============================================
@@ -806,13 +844,21 @@ async function renderGuide() {
   const list = document.getElementById('guideList');
   if (!guideData.length) {
     list.innerHTML = '<div class="empty-state">등록된 안내가 없습니다</div>';
+    document.getElementById('guideCategoryFilter').innerHTML = '';
     return;
   }
+  // 항목까지 함께 번역 (칩 라벨용)
+  const translatedGuides = await translateAll(guideData, ['제목','내용','항목'], currentLang);
+
+  renderGuideCategoryFilter();
+
   list.innerHTML = '';
-  const translatedGuides = await translateAll(guideData, ['제목','내용'], currentLang);
   for (let gi = 0; gi < guideData.length; gi++) {
     const g = guideData[gi];
     const tg = translatedGuides[gi];
+    // 카테고리 필터 적용 (raw 한국어 값으로 비교)
+    if (currentGuideCategoryFilter !== 'all'
+        && String(g['항목'] || '').trim() !== currentGuideCategoryFilter) continue;
     const title = g['제목'] || '';
     const content = g['내용'] || '';
     if (!title && !content) continue;
@@ -828,6 +874,38 @@ async function renderGuide() {
   }
 }
 
+function renderGuideCategoryFilter() {
+  const container = document.getElementById('guideCategoryFilter');
+  if (!container) return;
+  // 시트의 '항목' 컬럼에서 unique 값 추출 (동적)
+  const categories = [...new Set(
+    guideData.map(g => String(g['항목'] || '').trim()).filter(Boolean)
+  )];
+  // 카테고리 없으면 필터 자체를 숨김
+  if (!categories.length) {
+    container.innerHTML = '';
+    return;
+  }
+  // 현재 필터가 유효한 카테고리가 아니면 첫 번째로 초기화
+  if (!categories.includes(currentGuideCategoryFilter)) {
+    currentGuideCategoryFilter = categories[0];
+  }
+  container.innerHTML = categories.map(cat => {
+    const label = currentLang === 'ko'
+      ? cat
+      : (translateCache[currentLang + '::' + cat] || cat);
+    const active = cat === currentGuideCategoryFilter ? ' active' : '';
+    const safe = cat.replace(/\\/g, '\\\\').replace(/'/g, "\\'");
+    return `<button class="category-chip${active}" onclick="setGuideCategoryFilter('${safe}')">${label}</button>`;
+  }).join('');
+}
+
+function setGuideCategoryFilter(cat) {
+  if (currentGuideCategoryFilter === cat) return;
+  currentGuideCategoryFilter = cat;
+  renderGuide();
+}
+
 
 
 // =============================================
@@ -837,12 +915,12 @@ async function changeLanguage(lang) {
   currentLang = lang;
   translateCache = {};
   const uiTexts = {
-    ko: { 'txt-restaurant-title':'추천 맛집','txt-restaurant-sub':'시은재 근처 엄선한 맛집들이에요','txt-course-title':'산책코스','txt-course-sub':'경주의 아름다운 길을 걸어보세요','txt-guide-title':'이용안내','txt-guide-sub':'시은재 이용에 관한 안내입니다','tab-restaurants':'🍜 맛집','tab-courses':'🚶 산책코스','tab-guide':'📋 이용안내' },
-    en: { 'txt-restaurant-title':'Recommended Restaurants','txt-restaurant-sub':'Handpicked places near Sieunjae','txt-course-title':'Walking Routes','txt-course-sub':'Explore the beautiful paths of Gyeongju','txt-guide-title':'Guest Guide','txt-guide-sub':'Information for your stay at Sieunjae','tab-restaurants':'🍜 Food','tab-courses':'🚶 Walks','tab-guide':'📋 Guide' },
-    ja: { 'txt-restaurant-title':'おすすめグルメ','txt-restaurant-sub':'シウンジェ周辺の厳選グルメ','txt-course-title':'お散歩コース','txt-course-sub':'慶州の美しい道を歩いてみましょう','txt-guide-title':'ご利用案内','txt-guide-sub':'시은재のご利用についての案内です','tab-restaurants':'🍜 グルメ','tab-courses':'🚶 散歩','tab-guide':'📋 案内' },
-    zh: { 'txt-restaurant-title':'推荐餐厅','txt-restaurant-sub':'Sieunjae附近精选美食','txt-course-title':'散步路线','txt-course-sub':'漫步庆州美丽街道','txt-guide-title':'使用指南','txt-guide-sub':'시은재入住须知','tab-restaurants':'🍜 美食','tab-courses':'🚶 散步','tab-guide':'📋 指南' },
-    es: { 'txt-restaurant-title':'Restaurantes Recomendados','txt-restaurant-sub':'Lugares seleccionados cerca de Sieunjae','txt-course-title':'Rutas a Pie','txt-course-sub':'Explora los hermosos caminos de Gyeongju','txt-guide-title':'Guía de uso','txt-guide-sub':'Información para su estancia en Sieunjae','tab-restaurants':'🍜 Comida','tab-courses':'🚶 Rutas','tab-guide':'📋 Guía' },
-    fr: { 'txt-restaurant-title':'Restaurants recommandés','txt-restaurant-sub':'Adresses sélectionnées près de Sieunjae','txt-course-title':'Itinéraires de promenade','txt-course-sub':'Découvrez les beaux chemins de Gyeongju','txt-guide-title':'Guide d\'utilisation','txt-guide-sub':'Informations sur votre séjour à Sieunjae','tab-restaurants':'🍜 Cuisine','tab-courses':'🚶 Promenades','tab-guide':'📋 Guide' },
+    ko: { 'txt-restaurant-title':'추천 맛집','txt-restaurant-sub':'시은재 근처 추천하는 맛집들이에요','txt-course-title':'액티비티','txt-course-sub':'경주에서 즐길 수 있는 다양한 액티비티예요','txt-guide-title':'이용안내','txt-guide-sub':'시은재 이용에 관한 안내입니다','tab-restaurants':'🍜 맛집','tab-courses':'🎯 액티비티','tab-guide':'📋 이용안내' },
+    en: { 'txt-restaurant-title':'Recommended Restaurants','txt-restaurant-sub':'Recommended places near Sieunjae','txt-course-title':'Activities','txt-course-sub':'Various activities to enjoy in Gyeongju','txt-guide-title':'Guest Guide','txt-guide-sub':'Information for your stay at Sieunjae','tab-restaurants':'🍜 Food','tab-courses':'🎯 Activities','tab-guide':'📋 Guide' },
+    ja: { 'txt-restaurant-title':'おすすめグルメ','txt-restaurant-sub':'シウンジェ周辺のおすすめグルメ','txt-course-title':'アクティビティ','txt-course-sub':'慶州で楽しめる様々なアクティビティ','txt-guide-title':'ご利用案内','txt-guide-sub':'시은재のご利用についての案内です','tab-restaurants':'🍜 グルメ','tab-courses':'🎯 アクティビティ','tab-guide':'📋 案内' },
+    zh: { 'txt-restaurant-title':'推荐餐厅','txt-restaurant-sub':'Sieunjae附近推荐美食','txt-course-title':'活动','txt-course-sub':'在庆州可以享受的各种活动','txt-guide-title':'使用指南','txt-guide-sub':'시은재入住须知','tab-restaurants':'🍜 美食','tab-courses':'🎯 活动','tab-guide':'📋 指南' },
+    es: { 'txt-restaurant-title':'Restaurantes Recomendados','txt-restaurant-sub':'Lugares recomendados cerca de Sieunjae','txt-course-title':'Actividades','txt-course-sub':'Diversas actividades para disfrutar en Gyeongju','txt-guide-title':'Guía de uso','txt-guide-sub':'Información para su estancia en Sieunjae','tab-restaurants':'🍜 Comida','tab-courses':'🎯 Actividades','tab-guide':'📋 Guía' },
+    fr: { 'txt-restaurant-title':'Restaurants recommandés','txt-restaurant-sub':'Adresses recommandées près de Sieunjae','txt-course-title':'Activités','txt-course-sub':'Diverses activités à vivre à Gyeongju','txt-guide-title':'Guide d\'utilisation','txt-guide-sub':'Informations sur votre séjour à Sieunjae','tab-restaurants':'🍜 Cuisine','tab-courses':'🎯 Activités','tab-guide':'📋 Guide' },
   };
   const texts = uiTexts[lang] || uiTexts.ko;
   Object.entries(texts).forEach(([id, text]) => { const el = document.getElementById(id); if (el) el.textContent = text; });
