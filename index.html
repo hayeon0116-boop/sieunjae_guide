@@ -422,6 +422,26 @@
     font-weight: 500;
   }
 
+  /* 2단(하위) 카테고리 필터 — 1단보다 시각적 위계를 낮춤 */
+  .category-filter.sub {
+    margin-top: -8px;
+    gap: 6px;
+  }
+  .category-filter.sub:empty { display: none; }
+  .category-filter.sub .category-chip {
+    font-size: 11px;
+    padding: 5px 12px;
+    background: var(--paper2);
+    border-color: transparent;
+  }
+  .category-filter.sub .category-chip:hover { background: var(--border); }
+  .category-filter.sub .category-chip.active {
+    background: transparent;
+    color: var(--accent);
+    border-color: var(--accent);
+    font-weight: 500;
+  }
+
   .empty-state {
     text-align: center;
     padding: 40px 20px;
@@ -473,6 +493,7 @@
     <p id="txt-restaurant-sub">시은재 근처 추천하는 맛집들이에요</p>
   </div>
   <div class="category-filter" id="categoryFilter"></div>
+  <div class="category-filter sub" id="subCategoryFilter"></div>
   <div class="restaurant-grid" id="restaurantGrid">
     <div class="loading" id="txt-loading-r">맛집 불러오는 중...</div>
   </div>
@@ -522,18 +543,33 @@ let restaurantData = [];
 let courseData = [];
 let guideData = [];
 let currentCategoryFilter = 'all';
+let currentSubCategoryFilter = 'all';
 let currentGuideCategoryFilter = 'all';
 let currentActivityCategoryFilter = 'all';
 
 // 카테고리 (데이터의 카테고리 컬럼 값과 일치해야 함)
-const CATEGORIES = ['한식', '일식', '중식', '양식', '카페', '기타'];
+const CATEGORIES = ['한식', '분식', '일식', '중식', '양식', '카페'];
 const CATEGORY_LABELS = {
-  ko: { all: '전체', '한식': '한식', '일식': '일식', '중식': '중식', '양식': '양식', '카페': '카페', '기타': '기타' },
-  en: { all: 'All',  '한식': 'Korean', '일식': 'Japanese', '중식': 'Chinese', '양식': 'Western', '카페': 'Cafe', '기타': 'Others' },
-  ja: { all: 'すべて', '한식': '韓国料理', '일식': '日本料理', '중식': '中華料理', '양식': '洋食', '카페': 'カフェ', '기타': 'その他' },
-  zh: { all: '全部',   '한식': '韩餐', '일식': '日餐', '중식': '中餐', '양식': '西餐', '카페': '咖啡厅', '기타': '其他' },
-  es: { all: 'Todos',  '한식': 'Coreano', '일식': 'Japonés', '중식': 'Chino', '양식': 'Occidental', '카페': 'Café', '기타': 'Otros' },
-  fr: { all: 'Tous',   '한식': 'Coréen', '일식': 'Japonais', '중식': 'Chinois', '양식': 'Occidental', '카페': 'Café', '기타': 'Autres' }
+  ko: { all: '전체', '한식': '한식', '분식': '분식', '일식': '일식', '중식': '중식', '양식': '양식', '카페': '카페' },
+  en: { all: 'All',  '한식': 'Korean', '분식': 'Snacks', '일식': 'Japanese', '중식': 'Chinese', '양식': 'Western', '카페': 'Cafe' },
+  ja: { all: 'すべて', '한식': '韓国料理', '분식': '韓国軽食', '일식': '日本料理', '중식': '中華料理', '양식': '洋食', '카페': 'カフェ' },
+  zh: { all: '全部',   '한식': '韩餐', '분식': '韩式小吃', '일식': '日餐', '중식': '中餐', '양식': '西餐', '카페': '咖啡厅' },
+  es: { all: 'Todos',  '한식': 'Coreano', '분식': 'Aperitivos', '일식': 'Japonés', '중식': 'Chino', '양식': 'Occidental', '카페': 'Café' },
+  fr: { all: 'Tous',   '한식': 'Coréen', '분식': 'En-cas', '일식': 'Japonais', '중식': 'Chinois', '양식': 'Occidental', '카페': 'Café' }
+};
+
+// 하위 카테고리 (시트의 '<카테고리> 세부분류' 컬럼 값과 일치해야 함. 예: '한식 세부분류')
+// 상위 카테고리를 키로 추가하면 다른 카테고리에도 2단 필터가 생김
+const SUB_CATEGORIES = {
+  '한식': ['고기류', '면류', '정식류']
+};
+const SUB_CATEGORY_LABELS = {
+  ko: { '고기류': '고기류', '면류': '면류', '정식류': '정식류' },
+  en: { '고기류': 'Meat', '면류': 'Noodles', '정식류': 'Set Meals' },
+  ja: { '고기류': '肉料理', '면류': '麺類', '정식류': '定食' },
+  zh: { '고기류': '肉类', '면류': '面食', '정식류': '套餐' },
+  es: { '고기류': 'Carnes', '면류': 'Fideos', '정식류': 'Menús' },
+  fr: { '고기류': 'Viandes', '면류': 'Nouilles', '정식류': 'Menus' }
 };
 
 // =============================================
@@ -668,13 +704,54 @@ function renderCategoryFilter() {
   container.innerHTML = items.map(cat => `
     <button class="category-chip${cat === currentCategoryFilter ? ' active' : ''}" onclick="setCategoryFilter('${cat}')">${labels[cat]}</button>
   `).join('');
+  renderSubCategoryFilter();
 }
 
 function setCategoryFilter(cat) {
   if (currentCategoryFilter === cat) return;
   currentCategoryFilter = cat;
+  currentSubCategoryFilter = 'all';  // 상위가 바뀌면 하위는 전체로 리셋
   renderCategoryFilter();
   renderRestaurants();
+}
+
+// 하위 카테고리 필터 (상위에 하위 목록이 정의된 경우에만 노출)
+function renderSubCategoryFilter() {
+  const container = document.getElementById('subCategoryFilter');
+  if (!container) return;
+  const subs = SUB_CATEGORIES[currentCategoryFilter];
+  if (!subs) {
+    container.innerHTML = '';
+    return;
+  }
+  const labels = CATEGORY_LABELS[currentLang] || CATEGORY_LABELS.ko;
+  const subLabels = SUB_CATEGORY_LABELS[currentLang] || SUB_CATEGORY_LABELS.ko;
+  const items = ['all', ...subs];
+  container.innerHTML = items.map(sub => {
+    const label = sub === 'all' ? labels.all : (subLabels[sub] || sub);
+    const active = sub === currentSubCategoryFilter ? ' active' : '';
+    const safe = sub.replace(/\\/g, '\\\\').replace(/'/g, "\\'");
+    return `<button class="category-chip${active}" onclick="setSubCategoryFilter('${safe}')">${label}</button>`;
+  }).join('');
+}
+
+function setSubCategoryFilter(sub) {
+  if (currentSubCategoryFilter === sub) return;
+  currentSubCategoryFilter = sub;
+  renderSubCategoryFilter();
+  renderRestaurants();
+}
+
+// 시트의 '<카테고리> 세부분류' 값 (비어있으면 '전체'에서만 보임)
+function getSubCategory(r, cat) {
+  const colName = cat + ' 세부분류';
+  let raw = r[colName];
+  if (raw === undefined) {
+    // 헤더에 여분 공백이 섞여 있어도 찾도록
+    const key = Object.keys(r).find(k => k.trim() === colName);
+    if (key) raw = r[key];
+  }
+  return String(raw || '').trim();
 }
 
 async function renderRestaurants() {
@@ -682,6 +759,10 @@ async function renderRestaurants() {
   let filtered = restaurantData.filter(r => String(r['표시여부']).toUpperCase() !== 'N');
   if (currentCategoryFilter !== 'all') {
     filtered = filtered.filter(r => String(r['카테고리'] || '').trim() === currentCategoryFilter);
+    // 하위 카테고리 필터 (상위에 하위 목록이 정의된 경우에만)
+    if (SUB_CATEGORIES[currentCategoryFilter] && currentSubCategoryFilter !== 'all') {
+      filtered = filtered.filter(r => getSubCategory(r, currentCategoryFilter) === currentSubCategoryFilter);
+    }
   }
   if (!filtered.length) {
     grid.innerHTML = '<div class="empty-state">등록된 맛집이 없습니다</div>';
