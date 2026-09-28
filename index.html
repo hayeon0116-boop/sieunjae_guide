@@ -132,6 +132,25 @@
   }
   .guide-item-content b, .guide-item-content strong { font-weight: 600; }
 
+  /* 본문 속 링크 (이용안내 / 맛집 설명 / 액티비티 설명 공통) */
+  .guide-item-content a,
+  .card-desc a,
+  .course-desc a {
+    color: var(--accent);
+    font-weight: 500;
+    text-decoration: underline;
+    text-underline-offset: 3px;
+    text-decoration-thickness: 1px;
+    word-break: break-all;
+  }
+  .guide-item-content a:active,
+  .card-desc a:active,
+  .course-desc a:active { opacity: 0.6; }
+  /* 링크가 연달아 붙는 경우 간격 확보 */
+  .guide-item-content a + a,
+  .card-desc a + a,
+  .course-desc a + a { margin-left: 10px; }
+
   /* LOADING / ERROR */
   .loading {
     text-align: center;
@@ -661,6 +680,49 @@ async function translateText(text, targetLang) {
 }
 
 // =============================================
+// 본문 속 URL을 링크로 변환 (번역 전에 실행)
+// href 속성은 번역 API가 건드리지 않으므로 URL이 깨지지 않고,
+// 라벨은 한국어라 언어 전환 시 자동 번역됨
+// =============================================
+// 도메인별 링크 라벨 (위에서부터 먼저 맞는 것)
+const LINK_LABELS = [
+  [/(?:maps\.app\.goo\.gl|maps\.google\.|goo\.gl\/maps)/i, 'Google Map'],
+  [/(?:naver\.me|map\.naver\.com)/i, '네이버 지도'],
+  [/(?:map\.kakao\.com|place\.map\.kakao\.com|kko\.to)/i, '카카오맵']
+];
+
+function linkLabel(url) {
+  const hit = LINK_LABELS.find(pair => pair[0].test(url));
+  return hit ? hit[1] : '바로가기';
+}
+
+function linkTag(url, label) {
+  return `<a href="${url}" target="_blank" rel="noopener">${label}</a>`;
+}
+
+function linkify(text) {
+  if (!text) return text;
+  let s = String(text);
+  const kept = [];
+  const stash = html => '\u0000' + (kept.push(html) - 1) + '\u0000';
+
+  // 1) 시트에 직접 쓴 <a> 태그는 그대로 보존
+  s = s.replace(/<a\b[^>]*>[\s\S]*?<\/a>/gi, m => stash(m));
+
+  // 2) 괄호로 감싼 URL → 라벨 링크 (긴 URL 노출 방지)
+  s = s.replace(/\(\s*(https?:\/\/[^\s)<]+)\s*\)/g, (m, url) =>
+    stash(linkTag(url, linkLabel(url))));
+
+  // 3) 남은 맨 URL → URL 자체를 라벨로
+  s = s.replace(/https?:\/\/[^\s<>"']+/g, url => {
+    const clean = url.replace(/[.,;:!?]+$/, '');
+    return stash(linkTag(clean, clean)) + url.slice(clean.length);
+  });
+
+  return s.replace(/\u0000(\d+)\u0000/g, (m, i) => kept[Number(i)]);
+}
+
+// =============================================
 // Apps Script에서 데이터 로드 (JSON, 인코딩 문제 없음)
 // =============================================
 async function loadSheet(sheetName) {
@@ -769,7 +831,8 @@ async function renderRestaurants() {
     return;
   }
   grid.innerHTML = '';
-  const translatedRestaurants = await translateAll(filtered, ['이름','카테고리','설명'], currentLang);
+  const linkedRestaurants = filtered.map(r => Object.assign({}, r, { '설명': linkify(r['설명']) }));
+  const translatedRestaurants = await translateAll(linkedRestaurants, ['이름','카테고리','설명'], currentLang);
   for (let i = 0; i < filtered.length; i++) {
     const r = filtered[i];
     const t = translatedRestaurants[i];
@@ -822,7 +885,8 @@ async function renderCourses() {
     return;
   }
   // 항목까지 함께 번역 (칩 라벨용)
-  const translatedCourses = await translateAll(visible, ['체험명','설명','난이도','소요시간','경로','항목'], currentLang);
+  const linkedCourses = visible.map(c => Object.assign({}, c, { '설명': linkify(c['설명']) }));
+  const translatedCourses = await translateAll(linkedCourses, ['체험명','설명','난이도','소요시간','경로','항목'], currentLang);
 
   renderActivityCategoryFilter();
 
@@ -929,7 +993,8 @@ async function renderGuide() {
     return;
   }
   // 항목까지 함께 번역 (칩 라벨용)
-  const translatedGuides = await translateAll(guideData, ['제목','내용','항목'], currentLang);
+  const linkedGuides = guideData.map(g => Object.assign({}, g, { '내용': linkify(g['내용']) }));
+  const translatedGuides = await translateAll(linkedGuides, ['제목','내용','항목'], currentLang);
 
   renderGuideCategoryFilter();
 
